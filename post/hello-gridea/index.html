@@ -26,6 +26,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
 
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic@latest/assets/media/script/APlayer.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+        
             <!--CDN样式-->
             <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/hit-kounter-lc-0.3.0.js"></script>
             <script src="https://cdn1.lncld.net/static/js/av-min-1.5.0.js"></script>
@@ -78,7 +81,7 @@
                         <input id="switch_default" type="checkbox" class="switch_default">
                         <label for="switch_default" class="toggleBtn"></label>
             </div>
-            <form id="gridea-search-form" data-update="1587301481138" action="/search/index.html">
+            <form id="gridea-search-form" data-update="1587301547540" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
             </form>
         </div>
@@ -97,7 +100,7 @@
                         <!--zh-->
                         <a id="mobile-toggle-theme-zh" class="a zh">&nbsp;&#x6697;&#x9ED1;</a>
                     </div>
-                    <form id="gridea-search-form" data-update="1587301481138" action="/search/index.html">
+                    <form id="gridea-search-form" data-update="1587301547540" action="/search/index.html">
                         <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
                     </form>
                     <!--en-->
@@ -244,12 +247,12 @@
                                                     <i class="post-share"></i>
                                                     <span>Share:</span>
                                                         <a title="QR Code" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/hello-gridea/"><i class="fa fa-qrcode"></i></a>
-                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/hello-gridea/&sharesource=qzone&title=Hello Gridea&pics=https://pizssn.github.io/images/avatar.png?v=1587301481138&summary=&lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;
+                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/hello-gridea/&sharesource=qzone&title=Hello Gridea&pics=https://pizssn.github.io/images/avatar.png?v=1587301547540&summary=&lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;
 ✍️  &lt;strong&gt;Gridea&lt;/strong&gt; 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...&lt;/p&gt;
 "><i class="fa fa-qq"></i></a>
                                                         <a title="Weibo" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/hello-gridea/&sharesource=weibo&title=Hello Gridea + " - " + &lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;
 ✍️  &lt;strong&gt;Gridea&lt;/strong&gt; 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...&lt;/p&gt;
-&pic="https://pizssn.github.io/images/avatar.png?v=1587301481138 "><i class="fa fa-weibo "></i></a>
+&pic="https://pizssn.github.io/images/avatar.png?v=1587301547540 "><i class="fa fa-weibo "></i></a>
                                                         
                                                                 </span>
                                                                 <!--en-->
@@ -286,6 +289,8 @@
     </div>
     </div>
     </div>
+    
+    <div id="player"></div>
     
         <footer id="footer" class="footer">
             <div class="copyright">
@@ -335,6 +340,28 @@
         
                 <script>
                     
+
+                    function LoadPlayer() {
+                        var music_array = [];
+                        
+                        music_array.push({
+                            name: '我还在冬天',
+                            url: 'https://music.163.com/song?id=5302816',
+                            artist: 'pizssn',
+                            cover: 'https://music.163.com/song?id=5302816',
+                        });
+                        
+                        console.log(" MusicList: " + music_array);
+                        
+                        const ap = new APlayer({
+                            container: document.getElementById('player'),
+                            fixed: true,
+                            audio: music_array
+                        });
+                        
+                    }
+                    LoadPlayer();
+                    
                     
                     
                     hitokoto();
@@ -346,7 +373,7 @@
                     CheckVersion();
                     
                     var newDate = new Date();
-                    newDate.setTime(1587301481138);
+                    newDate.setTime(1587301547540);
                     console.log(" Blog Update Time: " + newDate.toLocaleDateString());
                     console.log("\n %c \u26a1Theme:Chic Author's Blog:https://blog.itjoker.cn  Write By ITJoker  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;");
                 </script>
@@ -376,6 +403,8 @@
                     </script>
                     <script>
                         var wearther_margin = "10px 10px";
+                        
+                        wearther_margin = "70px 5px";
                         
                         tpwidget("init", {
                             "flavor": "bubble",
