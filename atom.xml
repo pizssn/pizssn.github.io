@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://pizssn/pizssn.github.io</id>
+    <id>https://pizssn.github.io/pizssn</id>
     <title>pizssn</title>
-    <updated>2020-04-20T13:20:20.473Z</updated>
+    <updated>2020-04-20T13:24:00.181Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://pizssn/pizssn.github.io"/>
-    <link rel="self" href="https://pizssn/pizssn.github.io/atom.xml"/>
+    <link rel="alternate" href="https://pizssn.github.io/pizssn"/>
+    <link rel="self" href="https://pizssn.github.io/pizssn/atom.xml"/>
     <subtitle>一名沉浮在代码世界的游荡者</subtitle>
-    <logo>https://pizssn/pizssn.github.io/images/avatar.png</logo>
-    <icon>https://pizssn/pizssn.github.io/favicon.ico</icon>
+    <logo>https://pizssn.github.io/pizssn/images/avatar.png</logo>
+    <icon>https://pizssn.github.io/pizssn/favicon.ico</icon>
     <rights>All rights reserved 2020, pizssn</rights>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>https://pizssn/pizssn.github.io/post/hello-gridea/</id>
-        <link href="https://pizssn/pizssn.github.io/post/hello-gridea/">
+        <id>https://pizssn.github.io/pizssn/post/hello-gridea/</id>
+        <link href="https://pizssn.github.io/pizssn/post/hello-gridea/">
         </link>
         <updated>2018-12-11T16:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
