@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://pizssn.github.io</id>
     <title>pizssn</title>
-    <updated>2020-05-12T13:37:04.901Z</updated>
+    <updated>2020-05-26T09:05:28.230Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://pizssn.github.io"/>
     <link rel="self" href="https://pizssn.github.io/atom.xml"/>
@@ -10,6 +10,97 @@
     <logo>https://pizssn.github.io/images/avatar.png</logo>
     <icon>https://pizssn.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, pizssn</rights>
+    <entry>
+        <title type="html"><![CDATA[Hello,Servlet——第一个servlet程序]]></title>
+        <id>https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/</id>
+        <link href="https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/">
+        </link>
+        <updated>2019-10-02T05:57:30.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>首先我们要先了解什么是servlet？</strong></p>
+<blockquote>
+<p>狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
+</blockquote>
+<p>  简单点说就是，servlet是Sun公司开发动态web的一门技术，Sun公司在这些API中提供了一个接口叫做：servlet。</p>
+<p><strong>那么，怎么开发一个servlet程序呢？</strong></p>
+<p>只需要两个步骤：</p>
+<ol>
+<li>编写一个类，实现servlet接口。</li>
+<li>把开发好的Java类部署到Web服务器中。</li>
+</ol>
+<p><strong>构建Servlet</strong><br>
+servlet接口，Sun公司有两个默认的实现类：HTTPServlet，GenericServlet</p>
+<ol>
+<li>构建一个普通的Maven项目</li>
+<li>Maven环境优化</li>
+</ol>
+<ul>
+<li>修改web.xml，使其版本为当下最新</li>
+</ul>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;
+         metadata-complete=&quot;true&quot;&gt;
+&lt;/web-app&gt;
+</code></pre>
+<ul>
+<li>将maven的结构搭建完整<br>
+<img src="https://pizssn.github.io/post-images/1590482629390.png" alt="" loading="lazy"></li>
+</ul>
+<ol start="3">
+<li>编写一个servlet程序</li>
+</ol>
+<ul>
+<li>编写一个普通类</li>
+</ul>
+<pre><code class="language-java">  public class HelloServlet{
+
+  }
+</code></pre>
+<ul>
+<li>实现servlet接口，这里直接继承HTTPServlet</li>
+</ul>
+<pre><code class="language-java">import java.io.PrintWriter;
+
+public class HelloServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;进入doGet方法！&quot;);
+        PrintWriter writer = resp.getWriter();  /*相应流*/
+        writer.print(&quot;hello world!&quot;);
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+</code></pre>
+<ol start="4">
+<li>编写servlet的映射，我们写的Java程序，但是要通过浏览器访问，而浏览器需要连接web服务器。所以我们要在web服务器中注册我们的servlet，再为其设置一个浏览器能够访问的路径。</li>
+</ol>
+<pre><code class="language-xml">    &lt;!--注册servlet--&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;pizssn.servlet.HelloServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+    &lt;!--servlet的请求路径--&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/hello&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</code></pre>
+<ol start="5">
+<li>配置Tomcat<br>
+<img src="https://pizssn.github.io/post-images/1590483470448.png" alt="" loading="lazy"></li>
+<li>启动测试<br>
+<img src="https://pizssn.github.io/post-images/1590483674409.png" alt="" loading="lazy"></li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://pizssn.github.io/post/hello-gridea/</id>

@@ -156,33 +156,182 @@
 </script>
             <div class="main">
                 <div class="container">
-                    <div class="post-wrap archive">
-                        
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                Hello,Servlet——第一个servlet程序
+                            </h1>
                             
-                                <h3>
-                                    2018
-                                </h3>
+                                <!--en-->
+                                <div class="post-meta en">
+                                    Author:
+                                    <a itemprop="author" rel="author" href="/">
+                                        pizssn
+                                    </a>
+                                    <span class="post-time">
+                                Date: <a href="#">2019-10-02</a>
+                            </span>
+                                    <span class="post-readtime">Reading Time:<a
+                                    href="#">2.4
+                                    mins</a></span>
+                                    <span class="post-words">words:<a href="#">545</a></span>
+                                    
+                                            Views:
+                                            <span data-hk-page="current"> - </span>
+                                            
+                                </div>
+                                
+                        </header>
+                        
+                        <div class="post-content">
+                            <p><strong>首先我们要先了解什么是servlet？</strong></p>
+<blockquote>
+<p>狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
+</blockquote>
+<p>  简单点说就是，servlet是Sun公司开发动态web的一门技术，Sun公司在这些API中提供了一个接口叫做：servlet。</p>
+<p><strong>那么，怎么开发一个servlet程序呢？</strong></p>
+<p>只需要两个步骤：</p>
+<ol>
+<li>编写一个类，实现servlet接口。</li>
+<li>把开发好的Java类部署到Web服务器中。</li>
+</ol>
+<p><strong>构建Servlet</strong><br>
+servlet接口，Sun公司有两个默认的实现类：HTTPServlet，GenericServlet</p>
+<ol>
+<li>构建一个普通的Maven项目</li>
+<li>Maven环境优化</li>
+</ol>
+<ul>
+<li>修改web.xml，使其版本为当下最新</li>
+</ul>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;
+         metadata-complete=&quot;true&quot;&gt;
+&lt;/web-app&gt;
+</code></pre>
+<ul>
+<li>将maven的结构搭建完整<br>
+<img src="https://pizssn.github.io/post-images/1590482629390.png" alt="" loading="lazy"></li>
+</ul>
+<ol start="3">
+<li>编写一个servlet程序</li>
+</ol>
+<ul>
+<li>编写一个普通类</li>
+</ul>
+<pre><code class="language-java">  public class HelloServlet{
+
+  }
+</code></pre>
+<ul>
+<li>实现servlet接口，这里直接继承HTTPServlet</li>
+</ul>
+<pre><code class="language-java">import java.io.PrintWriter;
+
+public class HelloServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;进入doGet方法！&quot;);
+        PrintWriter writer = resp.getWriter();  /*相应流*/
+        writer.print(&quot;hello world!&quot;);
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+</code></pre>
+<ol start="4">
+<li>编写servlet的映射，我们写的Java程序，但是要通过浏览器访问，而浏览器需要连接web服务器。所以我们要在web服务器中注册我们的servlet，再为其设置一个浏览器能够访问的路径。</li>
+</ol>
+<pre><code class="language-xml">    &lt;!--注册servlet--&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;pizssn.servlet.HelloServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+    &lt;!--servlet的请求路径--&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/hello&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</code></pre>
+<ol start="5">
+<li>配置Tomcat<br>
+<img src="https://pizssn.github.io/post-images/1590483470448.png" alt="" loading="lazy"></li>
+<li>启动测试<br>
+<img src="https://pizssn.github.io/post-images/1590483674409.png" alt="" loading="lazy"></li>
+</ol>
+
+                        </div>
+                        
                                 
                                     
+                                        <!--en-->
+                                        <section class="post-copyright en">
+                                            <p class="copyright-item">
+                                                <span>Author:</span>
+                                                <span>pizssn</span>
+                                            </p>
 
-                                        <article class="archive-item">
-                                            <a class="archive-item-link" href="https://pizssn.github.io/post/hello-gridea/">
-                                                Hello Gridea
-                                            </a>
-                                            <span class="archive-item-date">2018-12-12 </span>
-                                        </article>
+                                            <p class="copyright-item">
+                                                <span>Permalink:</span>
+                                                <span><a href="https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/">https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/</a></span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>License:</span>
+                                                <span>MIT License</span>
+                                            </p>
+                                        </section>
                                         
-                                            
                                                 
-                    </div>
-                    <div class="pagination-container">
-                        
-                                                
+                                                    
+                                                        <!-- Share-->
+                                                        <span style="margin-right:15px">
+                                                    <i class="post-share"></i>
+                                                    <span>Share:</span>
+                                                        <a title="QR Code" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/"><i class="fa fa-qrcode"></i></a>
+                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/&sharesource=qzone&title=Hello,Servlet——第一个servlet程序&pics=https://pizssn.github.io/images/avatar.png?v=1590483892979&summary="><i class="fa fa-qq"></i></a>
+                                                        <a title="Weibo" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/&sharesource=weibo&title=Hello,Servlet——第一个servlet程序 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590483892979 "><i class="fa fa-weibo "></i></a>
                                                         
+                                                                </span>
+                                                                <!--en-->
+                                                                <section class="post-tags en ">
+                                                                    <div>
+                                                                        <span>Tag(s):</span>
+                                                                        <span class="tag ">
+                        
+                                                            </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="javascript:window.history.back();">back</a>
+                                                                        <span>&dot;</span>
+                                                                        <a href="#">home</a>
+                                                                    </div>
+                                                                </section>
                                                                 
-                    </div>
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/hello-gridea/">
+                                                                                                    Hello Gridea
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
                 </div>
+                
+                                            
             </div>
+    </div>
+    </div>
     </div>
     
         <footer id="footer" class="footer">
@@ -287,5 +436,8 @@
                     
         </div>
 </body>
+<script>
+    scroll();
+</script>
 
 </html>
