@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                关于
+                                ServletContext对象
                             </h1>
                             
                                     <!--zh-->
@@ -168,12 +168,18 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-01-25</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-10</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">0.3
+                                    href="#">2.1
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">75</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">434</a></span>
                                         
+                                            <span class="post-category">&#x5206;&#x7C7B;:
+                                
+                                <a href="https://pizssn.github.io/tag/0O7aJtjrr/">servlet</a>
+                                
+                            </span>
+                                            
                                                 阅读量:
                                                 <span data-hk-page="current"> - </span>
                                                 
@@ -182,22 +188,94 @@
                         </header>
                         
                         <div class="post-content">
-                            <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<p> 专门记录我java学习的点滴，不定时分享</p>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<p> 一个刚毕业不久的无名之人，你可以叫我pizssn</p>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
+                            <p>  web容器在启动的时候，它会为每个web程序都创建一个对应的ServletContext对象，他代表了当前的web应用。</p>
+<p><strong>共享数据</strong><br>
+  在这个servlet中的保存的数据，可以在另外一个servlet中拿到。</p>
 <ul>
-<li>打游戏</li>
-<li>摄影</li>
+<li>通过ServletContext保存数据</li>
 </ul>
-<h2 id="联系我呀">📬 联系我呀</h2>
+<pre><code class="language-java">package pizssn.servlet;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class ContextServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+//        this.getInitParameter()     初始化参数；
+//        this.getServletConfig()     servlet参数；
+//        this.getServletContext()    servlet上下文；
+        ServletContext context = this.getServletContext();
+        String username = &quot;pizssn&quot;;     /*数据*/
+        context.setAttribute(&quot;username&quot;, username);      /*将一个数据保存在ServletContext中，名字为context*/
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+</code></pre>
 <ul>
-<li>QQ 1271882428</li>
-<li>微信 pzq339151</li>
+<li>从ServletContext获取数据</li>
+</ul>
+<pre><code class="language-java">package pizssn.servlet;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class GetServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext context = this.getServletContext();
+        String username = (String) context.getAttribute(&quot;username&quot;);
+        resp.setContentType(&quot;text/html&quot;);
+        resp.setCharacterEncoding(&quot;utf-8&quot;);
+        resp.getWriter().print(&quot;名字：&quot; + username);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+</code></pre>
+<p><br></br><br>
+<strong>获取初始化参数</strong><br>
+  在xml文件配置一些web应用初始化参数</p>
+<pre><code class="language-xml">&lt;context-param&gt;
+        &lt;param-name&gt;url&lt;/param-name&gt;
+        &lt;param-value&gt;jdbc:mysql://localhost:3306/mybaties&lt;/param-value&gt;
+&lt;/context-param&gt;
+</code></pre>
+<p><br></br><br>
+<strong>请求转发</strong><br>
+  A想拿到的资源只能从C拿到，但是A只能接触到B，B就去C找相应资源，再转给A<br>
+<img src="https://pizssn.github.io/post-images/1590495909565.png" alt="" loading="lazy"></p>
+<ul>
+<li>语法</li>
+</ul>
+<pre><code class="language-java">        ServletContext context = this.getServletContext();
+//        RequestDispatcher requestDispatcher = context.getRequestDispatcher(&quot;/SD1&quot;);
+//        requestDispatcher.forward(req,resp);
+        context.getRequestDispatcher(&quot;/SD1&quot;).forward(req,resp);
+</code></pre>
+<p><br></br><br>
+<strong>读取资源文件</strong><br>
+  Properties(需要一个文件流)</p>
+<ul>
+<li>在java目录下新建Properties</li>
+<li>在resources目录下新建Properties<br>
+两者都会被打包到同一个路径下：class（classpath）</li>
 </ul>
 
                         </div>
@@ -208,9 +286,9 @@
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/about/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/about/&sharesource=qzone&title=关于&pics=https://pizssn.github.io/images/avatar.png?v=1590496537217&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/about/&sharesource=weibo&title=关于 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590496537217 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/servletcontext-dui-xiang/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/servletcontext-dui-xiang/&sharesource=qzone&title=ServletContext对象&pics=https://pizssn.github.io/images/avatar.png?v=1590496537217&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/servletcontext-dui-xiang/&sharesource=weibo&title=ServletContext对象 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590496537217 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -220,6 +298,12 @@
                                                                                     <span>&#x6807;&#x7B7E;:</span>
                                                                                     <span class="tag ">
                         
+                        
+                        <a href="https://pizssn.github.io/tag/0O7aJtjrr/">#
+                    servlet
+                        </a>
+                        
+                            
                                 </span>
                                                                                 </div>
                                                                                 <div>
@@ -235,6 +319,10 @@
                                                                                 <section class="post-nav">
                                                                                     
                                                                                             
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/servlet-yuan-li/">
+                                                                                                    Servlet原理
+                                                                                                </a>
+                                                                                                
                                                                                 </section>
                     </article>
                 </div>
