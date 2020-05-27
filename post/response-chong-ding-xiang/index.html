@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                Servlet原理
+                                Response重定向
                             </h1>
                             
                                     <!--zh-->
@@ -168,11 +168,11 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-05</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-14</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">0.1
+                                    href="#">0.4
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">31</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">104</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
@@ -188,8 +188,22 @@
                         </header>
                         
                         <div class="post-content">
-                            <p>servlet是由服务器调用，web服务器在收到浏览器请求后一系列流程如下图所示<br>
-<img src="https://pizssn.github.io/post-images/1590491693609.png" alt="" loading="lazy"></p>
+                            <p> web资源B在收到客户端A请求后，B会通知A客户端去访问另外一个WEB资源C，这个过程即为重定向<br>
+<img src="https://pizssn.github.io/post-images/1590544001570.png" alt="" loading="lazy"></p>
+<ul>
+<li>语法</li>
+</ul>
+<pre><code class="language-java">response.sendRedirect(&quot;/r/image&quot;);
+</code></pre>
+<p><br></br><br>
+<strong>请求转发和重定向的区别</strong></p>
+<ul>
+<li>相同点<br>
+页面都会发生跳转</li>
+<li>不同点<br>
+请求转发的时候，URL不会发生变化，状态码：307<br>
+重定向的时候，URL会发生变化，状态码：302</li>
+</ul>
 
                         </div>
                         
@@ -199,9 +213,9 @@
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/servlet-yuan-li/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/servlet-yuan-li/&sharesource=qzone&title=Servlet原理&pics=https://pizssn.github.io/images/avatar.png?v=1590563221337&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/servlet-yuan-li/&sharesource=weibo&title=Servlet原理 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590563221337 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/response-chong-ding-xiang/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=qzone&title=Response重定向&pics=https://pizssn.github.io/images/avatar.png?v=1590563221337&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=weibo&title=Response重定向 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590563221337 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -231,13 +245,13 @@
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
-                                                                                            ServletContext对象
+                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/duo-xian-cheng/">
+                                                                                            初识多线程
                                                                                         </a>
                                                                                         
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/">
-                                                                                                    Hello,Servlet——第一个servlet程序
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
+                                                                                                    ServletContext对象
                                                                                                 </a>
                                                                                                 
                                                                                 </section>
