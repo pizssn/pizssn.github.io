@@ -156,29 +156,147 @@
 </script>
             <div class="main">
                 <div class="container">
-                    <div class="post-wrap tags">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                线程安全及案例
+                            </h1>
+                            
+                                    <!--zh-->
+                                    <div class="post-meta zh">
+                                        &#x4F5C;&#x8005;:
+                                        <a itemprop="author" rel="author" href="/">
+                                            pizssn
+                                        </a>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-12-03</a></span>
+                                        <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
+                                    href="#">1.8
+                                    &#x5206;&#x949F;</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">438</a></span>
+                                        
+                                            <span class="post-category">&#x5206;&#x7C7B;:
+                                
+                                <a href="https://pizssn.github.io/tag/TNLvjhjjo/">线程</a>
+                                
+                            </span>
+                                            
+                                                阅读量:
+                                                <span data-hk-page="current"> - </span>
+                                                
+                                    </div>
+                                    
+                        </header>
                         
-                            <a href="https://pizssn.github.io/tag/TNLvjhjjo/">
-                                <p class="post-title">
-                                    <i class="fa fa-tags" aria-hidden="true"> 线程</i>
-                                </p>
-                            </a>
+                        <div class="post-content">
+                            <h2 id="什么是线程安全">什么是线程安全？</h2>
+<p>  多个线程同一时刻对同一个全局变量(同一份资源)做写操作(读操作不会涉及线程安全)时，如果结果跟我们预期的一样，我们就称之为线程安全，反之，线程不安全。<br>
+  为了保证线程的安全，最简单的方法就是给相应的方法、对象等加synchronized关键字。</p>
+<h2 id="什么是synchronized">什么是synchronized？</h2>
+<blockquote>
+<p>  一般说的synchronized用来做多线程同步功能，其实synchronized只是提供多线程互斥，而对象的wait()和notify()方法才提供线程的同步功能。<br>
+  synchronized是加锁，或者说是加对象锁，其实对象锁只是synchronized在实现锁机制中的一种锁（重量锁，用这种方式互斥线程开销大所以叫重量锁，或者叫对象monitor），而synchronized的锁机制会根据线程竞争情况在运行会有偏向锁、轻量锁、对象锁，自旋锁（或自适应自旋锁）等，总之，synchronized可以认为是一个几种锁过程的封装。</p>
+</blockquote>
+<h2 id="案例">案例</h2>
+<p>  添加进程进ArrayList,存在线程不安全的隐患</p>
+<pre><code class="language-java">import java.util.ArrayList;
+
+public class Demo {
+    public static void main(String[] args) {
+        ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; 10000; i++) {
+            new Thread(()-&gt;{
+                list.add(Thread.currentThread().getName());
+            }).start();
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(list.size());
+    }
+}
+</code></pre>
+<p>结果：明明向里面添加了10000个进程，最后ArrayList里只有8050个。<br>
+<img src="https://img-blog.csdnimg.cn/20200527191212747.png" alt="在这里插入图片描述" loading="lazy"><br>
+改进方案：添加synchronized关键字，给list上锁。</p>
+<pre><code class="language-java">import java.util.ArrayList;
+
+public class Demo3Synchronous {
+    public static void main(String[] args) {
+        ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; 10000; i++) {
+            new Thread(() -&gt; {
+                synchronized (list) {
+                    list.add(Thread.currentThread().getName());
+                }
+            }).start();
+        }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(list.size());
+    }
+}
+</code></pre>
+<p>结果：ArrayList有10000个进程。<br>
+<img src="https://img-blog.csdnimg.cn/20200527191641534.png" alt="在这里插入图片描述" loading="lazy"></p>
+
+                        </div>
+                        
+                                
+                                                    
+                                                                    <!--Share-->
+                                                                    <span style="margin-right:15px">
+                        <i class="post-share"></i>
+                        <span>&#x5206;&#x4EAB;:</span>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/&sharesource=qzone&title=线程安全及案例&pics=https://pizssn.github.io/images/avatar.png?v=1590581521071&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/&sharesource=weibo&title=线程安全及案例 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1590581521071 "><i class="fa fa-weibo "></i></a>
+
+                                                                    </span>
+                                                                    
+                                                                            <!--zh-->
+                                                                            <section class="post-tags zh ">
+                                                                                <div>
+                                                                                    <span>&#x6807;&#x7B7E;:</span>
+                                                                                    <span class="tag ">
+                        
+                        
+                        <a href="https://pizssn.github.io/tag/TNLvjhjjo/">#
+                    线程
+                        </a>
+                        
                             
-                            <a href="https://pizssn.github.io/tag/1jC5IJzHO/">
-                                <p class="post-title">
-                                    <i class="fa fa-tags" aria-hidden="true"> 函数</i>
-                                </p>
-                            </a>
-                            
-                            <a href="https://pizssn.github.io/tag/0O7aJtjrr/">
-                                <p class="post-title">
-                                    <i class="fa fa-tags" aria-hidden="true"> servlet</i>
-                                </p>
-                            </a>
-                            
-                    </div>
+                                </span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <a href="javascript:window.history.back();">
+                        &#x8FD4;&#x56DE;</a>
+                                                                                    <span>&dot;</span>
+                                                                                    <a href="#">&#x4E3B;&#x9875;</a>
+                                                                                </div>
+                                                                            </section>
+
+                                                                            
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/">
+                                                                                                    线程方法学习
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
                 </div>
+                
+                                            
             </div>
+    </div>
+    </div>
     </div>
     
         <footer id="footer" class="footer">
@@ -283,5 +401,8 @@
                     
         </div>
 </body>
+<script>
+    scroll();
+</script>
 
 </html>
