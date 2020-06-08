@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://pizssn.github.io</id>
     <title>pizssn</title>
-    <updated>2020-05-27T12:18:30.012Z</updated>
+    <updated>2020-06-08T02:11:40.894Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://pizssn.github.io"/>
     <link rel="self" href="https://pizssn.github.io/atom.xml"/>
@@ -10,6 +10,375 @@
     <logo>https://pizssn.github.io/images/avatar.png</logo>
     <icon>https://pizssn.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, pizssn</rights>
+    <entry>
+        <title type="html"><![CDATA[java集合笔记]]></title>
+        <id>https://pizssn.github.io/post/java-ji-he-bi-ji/</id>
+        <link href="https://pizssn.github.io/post/java-ji-he-bi-ji/">
+        </link>
+        <updated>2020-03-24T07:10:22.000Z</updated>
+        <content type="html"><![CDATA[<p>  在了解集合最初，我们必须要了解它的含义。</p>
+<blockquote>
+<p>集合类是Java数据结构的实现。Java的集合类是java.util包中的重要内容，它允许以各种方式将元素分组，并定义了各种使这些元素更容易操作的方法。Java集合类是Java将一些基本的和使用频率极高的基础类进行封装和增强后再以一个类的形式提供。集合类是可以往里面保存多个对象的类，存放的是对象，不同的集合类有不同的功能和特点，适合不同的场合，用以解决一些实际问题。</p>
+</blockquote>
+<p>   首先，在最前面来个图，这个图十分经典（偶然间看到的），实线边框的是实现类，折线边框的是抽象类，而点线边框的是接口。带有空心箭头的点线表示一个特定的类实现了一个接口，实心箭头表示某个类可以生成箭头所指向类的对象</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200607232355129.gif" alt="在这里插入图片描述" loading="lazy"></figure>
+<p>  这个就是java集合的一个初步的关系，其中Iterator是迭代器，是java为各种容器提供的公共的操作接口。这样使得对容器的遍历操作与其具体的底层实现相隔离，达到解耦的效果。接下来我们将逐一认识他们。</p>
+<hr>
+<p>  首先，java集合分两大类，一类为实现Collection接口，另一类为实现Map接口。这就衍生出两类集合派别。</p>
+<h2 id="collection">Collection</h2>
+<p>  它是一个线性，存放的是<strong>value</strong></p>
+<h2 id="map">Map</h2>
+<p>  它是一组键值对的对象，存放的是<strong>key：value</strong></p>
+<h2 id="iterator">Iterator</h2>
+<p>  前面提到了Iterator是java为各种容器提供的公共的操作接口，俗称迭代器，是集合的专用遍历方式。构造方法：<code>Iterator&lt;E&gt; iterator()</code> 返回此集合中元素的迭代器</p>
+<p>  迭代器是通过集合的iterator()方法得到的，所以我们说它是依赖于集合而存在的</p>
+<p>迭代器中的常用方法</p>
+<pre><code class="language-java">       E next()：返回迭代中的下一个元素
+       boolean hasNext()，如果迭代具有更多元素，则返回true
+       void remove():从迭代器中指向的集合中移除迭代器返回的最后一个元素（可选操作）
+</code></pre>
+<hr>
+<p><strong>Collection</strong>接口是单例集合的顶层接口，JDK<strong>不提供</strong>此类的<strong>任何直接实现</strong>。它下面还有三个子接口，一个为<strong>可重复的List接口</strong>，另一个为<strong>不可重复的Set接口</strong>，还有一个为<strong>Queue</strong>。</p>
+<h3 id="list接口">List接口</h3>
+<ul>
+<li>有序：存储和取出的元素顺序一致</li>
+<li>可重复：存储的元素可以重复</li>
+</ul>
+<p>  List接口有两个实现类，一个为<strong>ArrayList类</strong>，另一个为<strong>LinkedList类</strong></p>
+<p><strong>ArratList</strong>底层用的数据结构是<strong>数组</strong>，查询快，增删慢</p>
+<p>ArrayList构造方法：</p>
+<pre><code class="language-java">		public ArrayList()：创建一个空的集合对象
+</code></pre>
+<p>ArrayList添加方法：</p>
+<pre><code class="language-java">		public boolean add(E e)：将指定的元素追加到此集合的末尾
+		public void add(int index,E element)：在此集合中的指定位置插入指定的元素
+</code></pre>
+<p>ArrayList常用方法：</p>
+<pre><code class="language-java">       public boolean remove(Object o)：删除指定的元素，返回删除是否成功
+       public E remove(int index)：删除指定索引处的元素，返回被删除的元素
+       public E set(int index,E element)：修改指定索引处的元素，返回被修改的元素
+       public E get(int index)：返回指定索引处的元素
+       public int size()：返回集合中的元素的个数
+</code></pre>
+<p><strong>LinkedList</strong>底层用的数据结构是<strong>链表</strong>，增删快，查询慢</p>
+<p>LinkedList集合的特有功能：</p>
+<pre><code class="language-java">       public void addFirst(E e)：在该列表开头插入指定的元素
+       public void addLast(E e)：将指定的元素追加到此列表的末尾
+       public E getFirst()：返回此列表中的第一个元素
+       public E getLast()：返回此列表中的最后一个元素
+       public E removeFirst()：从此列表中删除并返回第一个元素
+       public E removeLast()：从此列表中删除并返回最后一个元素
+</code></pre>
+<p><strong>List还有一个特有的列表迭代器——ListIterator</strong><br>
+  通过List集合的ListIterator()方法得到，所以说它是List集合特有的迭代器。用于允许程序员沿<strong>任一方向遍历列表</strong>的列表迭代器，在迭代期间修改列表，并获取列表中迭代器的当前位置。</p>
+<p>ListIterator()中的常用方法：</p>
+<pre><code class="language-java">       E next()：返回迭代中的下一个元素
+       boolean hasNext()：如果迭代具有更多元素，则返回true
+       E previous()：返回列表中的上一个元素
+       boolean hasPrevious()：如果此列表迭代器在相反方向遍历列表时具有更多元素，则返回true
+       void add(E e)：将指定的元素插入列表
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-java">	   List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+       list.add(&quot;hello&quot;);
+       list.add(&quot;world&quot;);
+       list.add(&quot;java&quot;);
+       //列表迭代器搭建一次就行了
+       ListIterator&lt;String&gt; lit = list.listIterator();
+       while(lit.hasNext()){
+           String s = lit.next();
+           System.out.println(s);
+       }
+       while(lit.hasPrevious()){
+           String s1 = lit.previous();
+       }
+       //在这里并不会出现并发异常，因为在ListIterator接口下的实现类有个方法是把实际修改集合次数赋值给预期修改次数
+       //如果这里是Iterator，则会产生并发异常，因为Iterator下的next方法会把实际修改次数与预期修改次数对比，不相等则抛出一个异常
+       ListIterator&lt;String&gt; lits = list.listIterator();
+       while (lits.hasNext()){
+           String s = lits.next();
+           if (s.equals(&quot;world&quot;)){
+               lits.add((&quot;Javaee&quot;));
+           }
+       }
+</code></pre>
+<h2 id="set接口">Set接口</h2>
+<ul>
+<li>不包含重复元素的集合</li>
+<li>没有带索引的方法，所以不能使用普通for循环遍历，因为不能用set.get()获取元素。</li>
+</ul>
+<p>  <strong>Set接口</strong>有两个实现类，一个为<strong>HashSet类</strong>，另一个为<strong>TreeSet类</strong></p>
+<p><strong>HashSet</strong></p>
+<ul>
+<li>底层数据结构是哈希表</li>
+<li>对集合的迭代顺序不做任何保证，也就是说不保证存储和取出的元素顺序一致</li>
+<li>没有带索引的方法，因此不能使用普通for循环遍历</li>
+<li>由于是Set集合，所以是不包含重复元素的集合</li>
+</ul>
+<p>同时，<strong>LinkedHashSet</strong>继承了HashSet，源码更少、更简单，唯一的区别是内部使用的是LinkedHashMap。</p>
+<ul>
+<li>哈希表和链表实现的Set接口，具有可预测的迭代顺序</li>
+<li>由链表保证元素有序，也就是说元素的存储和取出顺序是一致的</li>
+<li>有哈希表保证元素唯一，也就是说没有重复的元素</li>
+</ul>
+<p>这里解释一下Set集合保证元素唯一性的方法</p>
+<blockquote>
+<p>①你存入一个元素，会根据元素的哈希值计算对象的存储位置，如果该位置没有对象，则存入元素<br>
+②如果该位置有元素，则遍历该位置的所有元素，将存入的元素会和以前的元素比较哈希值 如果哈希值不同，会继续往下执行，把元素添加到集合<br>
+③如果哈希值相同，会调用对象的equals()方法比较<br>
+  如果返回false，会继续向下执行，把元素添加到集合<br>
+  如果返回true，说明元素重复，不存储</p>
+</blockquote>
+<p><strong>TreeSet</strong></p>
+<ul>
+<li>元素有序，这里的顺序不是指存储和取出的顺序，而是按照一定的规则进行排序，具体排序方式取决于构造方法<br>
+  TreeSet()：根据其元素的自然排序进行排序<br>
+  TreeSet(Comparator comparator)：根据指定的比较器进行排序</li>
+<li>没有带索引的方法，所以不能使用普通的for循环遍历</li>
+<li>由于是set集合，所以不包括重复元素的集合</li>
+</ul>
+<h2 id="queue">Queue</h2>
+<p>  Queue也是Collection的子接口。不过通常情况下，LinkedList可以被用作Queue的一种实现，因为它实现了Queue的接口。不过还有一个类，叫PriorityQueue，它是一个比较标准的队列实现类，但不是绝对标准。因为PriorityQueue保存队列元素的顺序并不是按加入队列的顺序，而是按队列元素的大小进行重新排序。因此当调用peek()、pull()方法来取出队列中的元素时，并不是取出最先进入队列的元素，而是取出队列中最小的元素。这其实违背了先进先出(FIFO)规则。</p>
+<hr>
+<p><strong>Map</strong>接口是键值对集合的顶层接口，JDK<strong>也不提供</strong>此类的<strong>任何直接实现</strong>。<br>
+  它的结构为<code>Interface Map&lt;K,V&gt; K：键的类型 V：值的类型</code>。Map集合将键映射到值的对象,同时不能包含重复的键，每个键可以映射到最多一个值。它下面还有两个子接口，一个为<strong>AbstractMap接口</strong>，另一个为<strong>SortedMap接口</strong>。其中他们的实现类中比较常用的就是<strong>HashMap</strong>，<strong>TreeMap</strong>了。</p>
+<h2 id="hashmap">HashMap</h2>
+<p>  <strong>HashMap</strong>是我们使用最多的一个Map具体类。它是根据键的HashCode值来存储数据，根据键可以直接获取它的值，访问速度极快，但数据的存储是无序的。并且HashMap允许key和value都为null。</p>
+<p>HashMap基本方法：</p>
+<pre><code class="language-java">       V put(K key,V value)：添加元素
+       V remove(Object key)：根据键删除键值对元素，返回键所对应的值
+       void clear()：移除所有的键值对元素
+       boolean containsKey(Object value)：判断集合是否包含指定的键
+       boolean containsValue(Object value)：判断集合是否包含指定的值
+       boolean isEmpty()：判断集合是否为空
+       int size()：集合的长度，也就是集合中键值对的个数
+       V get(Object key)：根据键获取值
+       Set&lt;K&gt; keySet()：获取所有键的集合
+       Collection&lt;V&gt; values()：获取所有值的集合
+</code></pre>
+<p>Map集合遍历有两种方式，</p>
+<ul>
+<li>方式一：<br>
+1、获取所有键的集合，用keyset()实现；<br>
+2、遍历键的集合，获取到每一个键<br>
+3、根据键去找值，用get(Object key方法实现)</li>
+<li>方式二：<br>
+1、获取所有键值对对象的集合<br>
+Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet()：获取所有键值对对象的集合<br>
+2、遍历键值对对象的集合，得到每一个键值对对象<br>
+3、根据键值对对象获取键和值。用getKey()得到键，用getValue()得到值</li>
+</ul>
+<p>实例</p>
+<pre><code class="language-java">		Map&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();
+        map.put(&quot;a0001&quot;, &quot;pizssn&quot;);
+        map.put(&quot;a0002&quot;, &quot;yettaa&quot;);
+        map.put(&quot;a0003&quot;, &quot;piyiyi&quot;);
+        map.put(&quot;a0004&quot;, &quot;johnnn&quot;);
+        //第一种方式
+        Set&lt;String&gt; set = map.keySet();
+        for (String s : set) {
+            System.out.println(s + &quot;---&quot; + map.get(s));
+        }
+        //第二种方式
+        Set&lt;Map.Entry&lt;String, String&gt;&gt; sm = map.entrySet();
+        for (Map.Entry&lt;String, String&gt; m : sm) {
+            System.out.println(m.getKey() + &quot;---&quot; + m.getValue());
+        }
+</code></pre>
+<p>当然HashMap知识点远不止这些，没讲的会放在另外一个博客去扩展。</p>
+<p>  <strong>LinkedHashMap</strong>继承自HashMap，它相较于HashMap，最大的优点就是可以实现迭代有序，这个有序可以是插入顺序或者访问顺序。作为牺牲，它增加了时间和空间上的开销。因为它是通过维护一个运行于所有条目的双向链表，来实现元素迭代有序。Key和Value也都允许为null。</p>
+<h2 id="treemap">TreeMap</h2>
+<p>  <strong>TreeMap</strong>实现了SortMap接口，因此TreeMap是Key有序的。它默认的排序规则是升序排序，当然开发者也可以指定排序比较器，修改排序规则。TreeMap是基于红黑树实现的，其默认的节点颜色是黑色。当然要注意的一点是插入的键值<strong>不能为null</strong>。</p>
+<hr>
+<h2 id="collections类">Collections类</h2>
+<p>  很多人都会把Collection和Collections弄混，Collection是单例集合的顶层接口，而Collections是针对集合操作的工具类。</p>
+<p>Collections类的常用方法：</p>
+<pre><code class="language-java">public static &lt;T extends Comparable&lt;? super T&gt;&gt; void sort(List&lt;T&gt; list)：将指定的列表 
+public static void reverse(List&lt;?&gt; list)：反转指定元素的顺序
+public static void shuffle(List&lt;?&gt; list)：使用默认源随机排列指定的列表
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Date类以及Calendar类]]></title>
+        <id>https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/</id>
+        <link href="https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/">
+        </link>
+        <updated>2020-03-09T12:08:29.000Z</updated>
+        <content type="html"><![CDATA[<p>Date类和Calendar类均是对时间进行的一些表示。</p>
+<p>首先来看一下Date类的构造方法：<br>
+  Date()：根据当前的默认毫秒值创建日期对象<br>
+  Date(long date)：根据给定的毫秒值创建日期对象</p>
+<pre><code class="language-java">System.out.println(new Date());//结果：Fri Jun 05 15:09:27 CST 2020
+System.out.println(new Date(1000*60*60));//结果：Thu Jan 01 09:00:00 CST 1970
+//从1970年凌晨的时间算起，之所以是Thu Jan 01 09:00:00 CST 1970，是因为我们是东八区
+</code></pre>
+<hr>
+<p>  当然表示日期我们最常用的就是SimpleDateFormat类了，SimpleDateFormat是DateFormat的具体子类，而DateFormat是可以进行日期和字符串的格式化解析的一个抽象类。<br>
+<strong>SimpleDateFormat的构造方法：</strong><br>
+  SimpleDateFormat()：默认模式<br>
+  SimpleDateFormat(String pattern)：给定的模式</p>
+<table>
+<thead>
+<tr>
+<th>年 y</th>
+<th>月 M</th>
+<th>日 d</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>时 H</td>
+<td>分 m</td>
+<td>秒 s</td>
+</tr>
+</tbody>
+</table>
+<p>  当然在你得到当前日期信息之后，你还需要进行格式化，将其转化为我们能看的懂得信息。</p>
+<ul>
+<li>Date → String(格式化)<br>
+public final String format(Date date)</li>
+<li>String → Date(解析)<br>
+public Date parse(String source)</li>
+</ul>
+<p>  举个栗子,获取现在的年月日以及时间</p>
+<pre><code class="language-java">String s = new SimpleDateFormat(&quot;yyyy年MM月dd日 HH:mm:ss&quot;).format(d);
+</code></pre>
+<p>注意：时分秒要用<code>:</code>号隔开。</p>
+<hr>
+<p>还有一个表示时间的类为<strong>Calendar类</strong><br>
+  Calender为特定瞬间与一组诸如YEAR、MONTH、DAY_OF_MONTH、HOUR等日历字段之间的转换提供了一些方法，并为操作日历字段（如获得下星期的日期）提供了一些方法</p>
+<p>  public int get(int field)：返回给定日历字段的值，日历类中的每个日历字段都是静态的成员变量，并且是int类型<br>
+  public abstract void add(int field,int amount)：根据给定的日历字段和对应的时间，来对当前的日历进行操作<br>
+  public final void set(int year,int month,int date)：设置当前日期的年月日</p>
+<p>获取当前日期</p>
+<pre><code class="language-java">Calendar rightNow = Calendar.getInstance();//因为Calendar是抽象类，不能实例化对象，所以这里返回的是子类的对象
+int year = rightNow.get(Calendar.YEAR);
+int month = rightNow.get(Calendar.MONTH)+1;//之所以加1，是因为MONTH是从零开始的
+int date = rightNow.get(Calendar.DATE);
+System.out.println(year+&quot;年&quot;+month+&quot;月&quot;+date+&quot;日&quot;);
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[BigDecimal——解决float与double的精度问题]]></title>
+        <id>https://pizssn.github.io/post/bigdecimal-jie-jue-float-yu-double-de-jing-du-wen-ti/</id>
+        <link href="https://pizssn.github.io/post/bigdecimal-jie-jue-float-yu-double-de-jing-du-wen-ti/">
+        </link>
+        <updated>2020-02-27T02:06:06.000Z</updated>
+        <content type="html"><![CDATA[<p>首先在最开始之前，让我们来看一段代码。</p>
+<pre><code class="language-java">System.out.println(0.09+0.01);
+System.out.println(1.0-0.32);
+System.out.println(1.015*100);
+System.out.println(1.301/100);
+</code></pre>
+<p>你觉得答案是什么呢？0.10 , 0.68 , 101.5 ， 0.01301吗？</p>
+<p><strong>不是的</strong></p>
+<p>答案是：</p>
+<pre><code class="language-java">0.09999999999999999
+0.6799999999999999
+101.49999999999999
+0.013009999999999999
+</code></pre>
+<p>  对于这个结果你会不会很惊讶？<br>
+  其实是因为浮点数是由符号位、指数、尾数组合而成，而其中指数是由移码表示，尾数是由补码表示。尾数是有长度限制的，而有些小数换算成二进制时，超过了这个长度，因此只能通过四舍五入得到一个近似值。<br>
+  所以浮点运算很少是精确的，只要是超过精度能表示的范围就会产生误差。往往产生误差不是因为数的大小，而是因为数的精度。因此，产生的结果接近但不等于你所想要的结果。<br>
+  因此我们利用BigDecimal来解决这个问题</p>
+<blockquote>
+<p>BigDecimal方达如下：</p>
+</blockquote>
+<pre><code>   public BigDecimal add(BigDecimal augend)：加
+   public BigDecimal subtract(BigDecimal subtrahend)：减
+   public BigDecimal multiply(BigDecimal multiplicand)：乘
+   public BigDecimal divide(BigDecimal divisor)：除
+   public BigDecimal divide(BigDecimal divisor,int scale,int roundingMode)：商，几位小数。如何舍取
+</code></pre>
+<p>采用BigDecimal进行上面的运算</p>
+<pre><code class="language-java">System.out.println(new BigDecimal(&quot;0.09&quot;).add(new BigDecimal(&quot;0.01&quot;)));//这里一定要是字符串才算是调用BigDemical构造方法
+System.out.println(new BigDecimal(&quot;1.0&quot;).subtract(new BigDecimal(&quot;0.32&quot;)));//如果是float与double类型，得到的依旧是不精确的数值
+System.out.println(new BigDecimal(&quot;1.015&quot;).multiply(new BigDecimal(&quot;100&quot;)));
+System.out.println(new BigDecimal(&quot;1.301&quot;).divide(new BigDecimal(&quot;100&quot;)));
+System.out.println(new BigDecimal(&quot;1.301&quot;).divide(new BigDecimal(&quot;100&quot;),3,BigDecimal.ROUND_HALF_UP));//ROUND_HALF_UP是四舍五入
+</code></pre>
+<p>发现结果正常</p>
+<pre><code class="language-java">0.10
+0.68
+101.500
+0.01301
+0.013
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[String类的一些需要注意的问题]]></title>
+        <id>https://pizssn.github.io/post/string-lei-de-yi-xie-xu-yao-zhu-yi-de-wen-ti/</id>
+        <link href="https://pizssn.github.io/post/string-lei-de-yi-xie-xu-yao-zhu-yi-de-wen-ti/">
+        </link>
+        <updated>2020-01-15T02:02:37.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="一-string-s-new-stringhello与string-s-hello有什么区别">一、String s = new String[&quot;hello&quot;]与String s = &quot;hello&quot;有什么区别？</h2>
+<p>相信很多人都面对过这个问题，其实也不难理解。</p>
+<p>  String s = new String[&quot;hello&quot;]会先检查常量池当中是否有hello对象，有则返回对象，没有就创建对应的实例对象。然后在堆中 new String (&quot;hello&quot;)，然后将对象地址赋值给s。<br>
+  String s = &quot;hello&quot;会先到常量池中查找是否存在hello这个字符串，如果有，那么返回已经存在字符串的引用，如果不存在,那么就创建字符串对象，并且返回引用。</p>
+<p><strong>他们的区别就是：</strong><br>
+  前者会在堆中开辟一个空间，会创建两个对象（如果方法区的常量池中无你所需要的变量）<br>
+  后者只会创建一个对象（在方法区的常量池中寻找需要的变量）</p>
+<pre><code class="language-java">String s1 = new String(&quot;hello!&quot;);
+        String s2 = &quot;hello!&quot;;
+        System.out.println(s1 == s2);//比较的地址值，此地址值new出来的是指向的是堆里面的地址，然后再指向方法区的某个地址。直接创建的直接指向方法区的某个地址。
+        System.out.println(s1.equals(s2));//比较的内容（重写之后的）
+</code></pre>
+<p>结果<br>
+<img src="https://img-blog.csdnimg.cn/20200604215448280.png" alt="" loading="lazy"></p>
+<h2 id="二-string-s-与string-s-null意义相同吗">二、String s = &quot;&quot;与String s = NULL意义相同吗？</h2>
+<p>不相同</p>
+<p>前者表示字符串为空<br>
+后者表示字符串对象为空</p>
+<h2 id="三-字符串的转换功能">三、字符串的转换功能</h2>
+<p>byte[] getBytes()：把字符串转换为字节数组<br>
+char[] toCharArray()：把字符串转换为字符数组<br>
+Static String valueOf(char[] chs)：把字符数组转化为字符串<br>
+Static String valueOf(int i)：把int类型的数据转换为字符串<br>
+······<br>
+<strong>注意</strong>：String类的valueOf方法可以把<strong>任意类型</strong>的数据转成字符串</p>
+<h2 id="四-字符串的传参">四、字符串的传参</h2>
+<p>  String作为参数传递，效果和基本类型作为参数传递是一样的，形式参数的改变不影响实际参数。而StringBuffer就是引用类型，形式参数的改变直接影响实际参数。</p>
+<pre><code class="language-java">public class StringBufferDemo {
+    public static void main(String[] args) {
+        String s1 = &quot;hello&quot;;
+        String s2 = &quot;world&quot;;
+        System.out.println(s1 + s2);
+        change(s1, s2);//String在这里是作为形参传递，不改变实际上的值
+        System.out.println(s1 + s2);
+        StringBuffer sb1 = new StringBuffer(&quot;hello&quot;);
+        StringBuffer sb2 = new StringBuffer(&quot;world&quot;);
+        System.out.println(sb1 + &quot;&quot; + sb2);
+        change(sb1, sb2);
+        System.out.println(sb1 + &quot;&quot; + sb2);
+    }
+
+    public static void change(String str1, String str2) {
+        str1 = str2;
+        str2 = str1 + str2;
+    }
+
+    public static void change(StringBuffer str1, StringBuffer str2) {
+        str1 = str2;
+        str2.append(str1);
+    }
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200604221812221.png" alt="在这里插入图片描述" loading="lazy"></figure>
+<h2 id="五-stringstringbufferstringbuilder的区别">五、String,StringBuffer,StringBuilder的区别</h2>
+<ul>
+<li>String是内容不可变的，而StringBuffer，StringBuilder都是内容可变的</li>
+<li>在多线程下而言，StringBuffer是同步的，数据安全，但是效率低；而StringBuilder是不同步的，数据不安全，效率高。</li>
+</ul>
+<h2 id="六-stringbuffer和数组的区别">六、StringBuffer和数组的区别</h2>
+<ul>
+<li>相同点：二者都可以看做是一个容器，装其他的数据。</li>
+<li>不同点：StringBuffer的数据最终是一个字符串数据；而数组可以放置多种数据，但必须是同一种数据类型。</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[线程安全及案例]]></title>
         <id>https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/</id>
@@ -534,111 +903,6 @@ public class GetServlet extends HttpServlet {
 <li>在resources目录下新建Properties<br>
 两者都会被打包到同一个路径下：class（classpath）</li>
 </ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Servlet原理]]></title>
-        <id>https://pizssn.github.io/post/servlet-yuan-li/</id>
-        <link href="https://pizssn.github.io/post/servlet-yuan-li/">
-        </link>
-        <updated>2019-10-05T10:51:58.000Z</updated>
-        <content type="html"><![CDATA[<p>servlet是由服务器调用，web服务器在收到浏览器请求后一系列流程如下图所示<br>
-<img src="https://pizssn.github.io/post-images/1590491693609.png" alt="" loading="lazy"></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello,Servlet——第一个servlet程序]]></title>
-        <id>https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/</id>
-        <link href="https://pizssn.github.io/post/helloservlet-di-yi-ge-servlet-cheng-xu/">
-        </link>
-        <updated>2019-10-02T05:57:30.000Z</updated>
-        <content type="html"><![CDATA[<p><strong>首先我们要先了解什么是servlet？</strong></p>
-<blockquote>
-<p>狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
-</blockquote>
-<p>  简单点说就是，servlet是Sun公司开发动态web的一门技术，Sun公司在这些API中提供了一个接口叫做：servlet。</p>
-<p><strong>那么，怎么开发一个servlet程序呢？</strong></p>
-<p>只需要两个步骤：</p>
-<ol>
-<li>编写一个类，实现servlet接口。</li>
-<li>把开发好的Java类部署到Web服务器中。</li>
-</ol>
-<p><strong>构建Servlet</strong><br>
-servlet接口，Sun公司有两个默认的实现类：HTTPServlet，GenericServlet</p>
-<ol>
-<li>
-<p>构建一个普通的Maven项目</p>
-</li>
-<li>
-<p>Maven环境优化</p>
-</li>
-</ol>
-<ul>
-<li>修改web.xml，使其版本为当下最新</li>
-</ul>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
-         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
-                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
-         version=&quot;4.0&quot;
-         metadata-complete=&quot;true&quot;&gt;
-&lt;/web-app&gt;
-</code></pre>
-<ul>
-<li>将maven的结构搭建完整<br>
-<img src="https://pizssn.github.io/post-images/1590482629390.png" alt="" loading="lazy"></li>
-</ul>
-<ol start="3">
-<li>编写一个servlet程序</li>
-</ol>
-<ul>
-<li>编写一个普通类</li>
-</ul>
-<pre><code class="language-java">  public class HelloServlet{
-
-  }
-</code></pre>
-<ul>
-<li>实现servlet接口，这里直接继承HTTPServlet</li>
-</ul>
-<pre><code class="language-java">import java.io.PrintWriter;
-
-public class HelloServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(&quot;进入doGet方法！&quot;);
-        PrintWriter writer = resp.getWriter();  /*相应流*/
-        writer.print(&quot;hello world!&quot;);
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
-}
-</code></pre>
-<ol start="4">
-<li>编写servlet的映射，我们写的Java程序，但是要通过浏览器访问，而浏览器需要连接web服务器。所以我们要在web服务器中注册我们的servlet，再为其设置一个浏览器能够访问的路径。</li>
-</ol>
-<pre><code class="language-xml">    &lt;!--注册servlet--&gt;
-    &lt;servlet&gt;
-        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
-        &lt;servlet-class&gt;pizssn.servlet.HelloServlet&lt;/servlet-class&gt;
-    &lt;/servlet&gt;
-    &lt;!--servlet的请求路径--&gt;
-    &lt;servlet-mapping&gt;
-        &lt;servlet-name&gt;hello&lt;/servlet-name&gt;
-        &lt;url-pattern&gt;/hello&lt;/url-pattern&gt;
-    &lt;/servlet-mapping&gt;
-</code></pre>
-<ol start="5">
-<li>配置Tomcat<br>
-<img src="https://pizssn.github.io/post-images/1590483470448.png" alt="" loading="lazy"></li>
-<li>启动测试<br>
-<img src="https://pizssn.github.io/post-images/1590483674409.png" alt="" loading="lazy"></li>
-</ol>
 ]]></content>
     </entry>
 </feed>

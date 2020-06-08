@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                Response重定向
+                                java集合笔记
                             </h1>
                             
                                     <!--zh-->
@@ -168,15 +168,15 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-14</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-03-24</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">0.4
+                                    href="#">11.2
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">104</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">2951</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
-                                <a href="https://pizssn.github.io/tag/0O7aJtjrr/">servlet</a>
+                                <a href="https://pizssn.github.io/tag/K1jdUh6Je/">集合</a>
                                 
                             </span>
                                             
@@ -188,22 +188,187 @@
                         </header>
                         
                         <div class="post-content">
-                            <p> web资源B在收到客户端A请求后，B会通知A客户端去访问另外一个WEB资源C，这个过程即为重定向<br>
-<img src="https://pizssn.github.io/post-images/1590544001570.png" alt="" loading="lazy"></p>
-<ul>
-<li>语法</li>
-</ul>
-<pre><code class="language-java">response.sendRedirect(&quot;/r/image&quot;);
+                            <p>  在了解集合最初，我们必须要了解它的含义。</p>
+<blockquote>
+<p>集合类是Java数据结构的实现。Java的集合类是java.util包中的重要内容，它允许以各种方式将元素分组，并定义了各种使这些元素更容易操作的方法。Java集合类是Java将一些基本的和使用频率极高的基础类进行封装和增强后再以一个类的形式提供。集合类是可以往里面保存多个对象的类，存放的是对象，不同的集合类有不同的功能和特点，适合不同的场合，用以解决一些实际问题。</p>
+</blockquote>
+<p>   首先，在最前面来个图，这个图十分经典（偶然间看到的），实线边框的是实现类，折线边框的是抽象类，而点线边框的是接口。带有空心箭头的点线表示一个特定的类实现了一个接口，实心箭头表示某个类可以生成箭头所指向类的对象</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200607232355129.gif" alt="在这里插入图片描述" loading="lazy"></figure>
+<p>  这个就是java集合的一个初步的关系，其中Iterator是迭代器，是java为各种容器提供的公共的操作接口。这样使得对容器的遍历操作与其具体的底层实现相隔离，达到解耦的效果。接下来我们将逐一认识他们。</p>
+<hr>
+<p>  首先，java集合分两大类，一类为实现Collection接口，另一类为实现Map接口。这就衍生出两类集合派别。</p>
+<h2 id="collection">Collection</h2>
+<p>  它是一个线性，存放的是<strong>value</strong></p>
+<h2 id="map">Map</h2>
+<p>  它是一组键值对的对象，存放的是<strong>key：value</strong></p>
+<h2 id="iterator">Iterator</h2>
+<p>  前面提到了Iterator是java为各种容器提供的公共的操作接口，俗称迭代器，是集合的专用遍历方式。构造方法：<code>Iterator&lt;E&gt; iterator()</code> 返回此集合中元素的迭代器</p>
+<p>  迭代器是通过集合的iterator()方法得到的，所以我们说它是依赖于集合而存在的</p>
+<p>迭代器中的常用方法</p>
+<pre><code class="language-java">       E next()：返回迭代中的下一个元素
+       boolean hasNext()，如果迭代具有更多元素，则返回true
+       void remove():从迭代器中指向的集合中移除迭代器返回的最后一个元素（可选操作）
 </code></pre>
-<p><br></br><br>
-<strong>请求转发和重定向的区别</strong></p>
+<hr>
+<p><strong>Collection</strong>接口是单例集合的顶层接口，JDK<strong>不提供</strong>此类的<strong>任何直接实现</strong>。它下面还有三个子接口，一个为<strong>可重复的List接口</strong>，另一个为<strong>不可重复的Set接口</strong>，还有一个为<strong>Queue</strong>。</p>
+<h3 id="list接口">List接口</h3>
 <ul>
-<li>相同点<br>
-页面都会发生跳转</li>
-<li>不同点<br>
-请求转发的时候，URL不会发生变化，状态码：307<br>
-重定向的时候，URL会发生变化，状态码：302</li>
+<li>有序：存储和取出的元素顺序一致</li>
+<li>可重复：存储的元素可以重复</li>
 </ul>
+<p>  List接口有两个实现类，一个为<strong>ArrayList类</strong>，另一个为<strong>LinkedList类</strong></p>
+<p><strong>ArratList</strong>底层用的数据结构是<strong>数组</strong>，查询快，增删慢</p>
+<p>ArrayList构造方法：</p>
+<pre><code class="language-java">		public ArrayList()：创建一个空的集合对象
+</code></pre>
+<p>ArrayList添加方法：</p>
+<pre><code class="language-java">		public boolean add(E e)：将指定的元素追加到此集合的末尾
+		public void add(int index,E element)：在此集合中的指定位置插入指定的元素
+</code></pre>
+<p>ArrayList常用方法：</p>
+<pre><code class="language-java">       public boolean remove(Object o)：删除指定的元素，返回删除是否成功
+       public E remove(int index)：删除指定索引处的元素，返回被删除的元素
+       public E set(int index,E element)：修改指定索引处的元素，返回被修改的元素
+       public E get(int index)：返回指定索引处的元素
+       public int size()：返回集合中的元素的个数
+</code></pre>
+<p><strong>LinkedList</strong>底层用的数据结构是<strong>链表</strong>，增删快，查询慢</p>
+<p>LinkedList集合的特有功能：</p>
+<pre><code class="language-java">       public void addFirst(E e)：在该列表开头插入指定的元素
+       public void addLast(E e)：将指定的元素追加到此列表的末尾
+       public E getFirst()：返回此列表中的第一个元素
+       public E getLast()：返回此列表中的最后一个元素
+       public E removeFirst()：从此列表中删除并返回第一个元素
+       public E removeLast()：从此列表中删除并返回最后一个元素
+</code></pre>
+<p><strong>List还有一个特有的列表迭代器——ListIterator</strong><br>
+  通过List集合的ListIterator()方法得到，所以说它是List集合特有的迭代器。用于允许程序员沿<strong>任一方向遍历列表</strong>的列表迭代器，在迭代期间修改列表，并获取列表中迭代器的当前位置。</p>
+<p>ListIterator()中的常用方法：</p>
+<pre><code class="language-java">       E next()：返回迭代中的下一个元素
+       boolean hasNext()：如果迭代具有更多元素，则返回true
+       E previous()：返回列表中的上一个元素
+       boolean hasPrevious()：如果此列表迭代器在相反方向遍历列表时具有更多元素，则返回true
+       void add(E e)：将指定的元素插入列表
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-java">	   List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+       list.add(&quot;hello&quot;);
+       list.add(&quot;world&quot;);
+       list.add(&quot;java&quot;);
+       //列表迭代器搭建一次就行了
+       ListIterator&lt;String&gt; lit = list.listIterator();
+       while(lit.hasNext()){
+           String s = lit.next();
+           System.out.println(s);
+       }
+       while(lit.hasPrevious()){
+           String s1 = lit.previous();
+       }
+       //在这里并不会出现并发异常，因为在ListIterator接口下的实现类有个方法是把实际修改集合次数赋值给预期修改次数
+       //如果这里是Iterator，则会产生并发异常，因为Iterator下的next方法会把实际修改次数与预期修改次数对比，不相等则抛出一个异常
+       ListIterator&lt;String&gt; lits = list.listIterator();
+       while (lits.hasNext()){
+           String s = lits.next();
+           if (s.equals(&quot;world&quot;)){
+               lits.add((&quot;Javaee&quot;));
+           }
+       }
+</code></pre>
+<h2 id="set接口">Set接口</h2>
+<ul>
+<li>不包含重复元素的集合</li>
+<li>没有带索引的方法，所以不能使用普通for循环遍历，因为不能用set.get()获取元素。</li>
+</ul>
+<p>  <strong>Set接口</strong>有两个实现类，一个为<strong>HashSet类</strong>，另一个为<strong>TreeSet类</strong></p>
+<p><strong>HashSet</strong></p>
+<ul>
+<li>底层数据结构是哈希表</li>
+<li>对集合的迭代顺序不做任何保证，也就是说不保证存储和取出的元素顺序一致</li>
+<li>没有带索引的方法，因此不能使用普通for循环遍历</li>
+<li>由于是Set集合，所以是不包含重复元素的集合</li>
+</ul>
+<p>同时，<strong>LinkedHashSet</strong>继承了HashSet，源码更少、更简单，唯一的区别是内部使用的是LinkedHashMap。</p>
+<ul>
+<li>哈希表和链表实现的Set接口，具有可预测的迭代顺序</li>
+<li>由链表保证元素有序，也就是说元素的存储和取出顺序是一致的</li>
+<li>有哈希表保证元素唯一，也就是说没有重复的元素</li>
+</ul>
+<p>这里解释一下Set集合保证元素唯一性的方法</p>
+<blockquote>
+<p>①你存入一个元素，会根据元素的哈希值计算对象的存储位置，如果该位置没有对象，则存入元素<br>
+②如果该位置有元素，则遍历该位置的所有元素，将存入的元素会和以前的元素比较哈希值 如果哈希值不同，会继续往下执行，把元素添加到集合<br>
+③如果哈希值相同，会调用对象的equals()方法比较<br>
+  如果返回false，会继续向下执行，把元素添加到集合<br>
+  如果返回true，说明元素重复，不存储</p>
+</blockquote>
+<p><strong>TreeSet</strong></p>
+<ul>
+<li>元素有序，这里的顺序不是指存储和取出的顺序，而是按照一定的规则进行排序，具体排序方式取决于构造方法<br>
+  TreeSet()：根据其元素的自然排序进行排序<br>
+  TreeSet(Comparator comparator)：根据指定的比较器进行排序</li>
+<li>没有带索引的方法，所以不能使用普通的for循环遍历</li>
+<li>由于是set集合，所以不包括重复元素的集合</li>
+</ul>
+<h2 id="queue">Queue</h2>
+<p>  Queue也是Collection的子接口。不过通常情况下，LinkedList可以被用作Queue的一种实现，因为它实现了Queue的接口。不过还有一个类，叫PriorityQueue，它是一个比较标准的队列实现类，但不是绝对标准。因为PriorityQueue保存队列元素的顺序并不是按加入队列的顺序，而是按队列元素的大小进行重新排序。因此当调用peek()、pull()方法来取出队列中的元素时，并不是取出最先进入队列的元素，而是取出队列中最小的元素。这其实违背了先进先出(FIFO)规则。</p>
+<hr>
+<p><strong>Map</strong>接口是键值对集合的顶层接口，JDK<strong>也不提供</strong>此类的<strong>任何直接实现</strong>。<br>
+  它的结构为<code>Interface Map&lt;K,V&gt; K：键的类型 V：值的类型</code>。Map集合将键映射到值的对象,同时不能包含重复的键，每个键可以映射到最多一个值。它下面还有两个子接口，一个为<strong>AbstractMap接口</strong>，另一个为<strong>SortedMap接口</strong>。其中他们的实现类中比较常用的就是<strong>HashMap</strong>，<strong>TreeMap</strong>了。</p>
+<h2 id="hashmap">HashMap</h2>
+<p>  <strong>HashMap</strong>是我们使用最多的一个Map具体类。它是根据键的HashCode值来存储数据，根据键可以直接获取它的值，访问速度极快，但数据的存储是无序的。并且HashMap允许key和value都为null。</p>
+<p>HashMap基本方法：</p>
+<pre><code class="language-java">       V put(K key,V value)：添加元素
+       V remove(Object key)：根据键删除键值对元素，返回键所对应的值
+       void clear()：移除所有的键值对元素
+       boolean containsKey(Object value)：判断集合是否包含指定的键
+       boolean containsValue(Object value)：判断集合是否包含指定的值
+       boolean isEmpty()：判断集合是否为空
+       int size()：集合的长度，也就是集合中键值对的个数
+       V get(Object key)：根据键获取值
+       Set&lt;K&gt; keySet()：获取所有键的集合
+       Collection&lt;V&gt; values()：获取所有值的集合
+</code></pre>
+<p>Map集合遍历有两种方式，</p>
+<ul>
+<li>方式一：<br>
+1、获取所有键的集合，用keyset()实现；<br>
+2、遍历键的集合，获取到每一个键<br>
+3、根据键去找值，用get(Object key方法实现)</li>
+<li>方式二：<br>
+1、获取所有键值对对象的集合<br>
+Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet()：获取所有键值对对象的集合<br>
+2、遍历键值对对象的集合，得到每一个键值对对象<br>
+3、根据键值对对象获取键和值。用getKey()得到键，用getValue()得到值</li>
+</ul>
+<p>实例</p>
+<pre><code class="language-java">		Map&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();
+        map.put(&quot;a0001&quot;, &quot;pizssn&quot;);
+        map.put(&quot;a0002&quot;, &quot;yettaa&quot;);
+        map.put(&quot;a0003&quot;, &quot;piyiyi&quot;);
+        map.put(&quot;a0004&quot;, &quot;johnnn&quot;);
+        //第一种方式
+        Set&lt;String&gt; set = map.keySet();
+        for (String s : set) {
+            System.out.println(s + &quot;---&quot; + map.get(s));
+        }
+        //第二种方式
+        Set&lt;Map.Entry&lt;String, String&gt;&gt; sm = map.entrySet();
+        for (Map.Entry&lt;String, String&gt; m : sm) {
+            System.out.println(m.getKey() + &quot;---&quot; + m.getValue());
+        }
+</code></pre>
+<p>当然HashMap知识点远不止这些，没讲的会放在另外一个博客去扩展。</p>
+<p>  <strong>LinkedHashMap</strong>继承自HashMap，它相较于HashMap，最大的优点就是可以实现迭代有序，这个有序可以是插入顺序或者访问顺序。作为牺牲，它增加了时间和空间上的开销。因为它是通过维护一个运行于所有条目的双向链表，来实现元素迭代有序。Key和Value也都允许为null。</p>
+<h2 id="treemap">TreeMap</h2>
+<p>  <strong>TreeMap</strong>实现了SortMap接口，因此TreeMap是Key有序的。它默认的排序规则是升序排序，当然开发者也可以指定排序比较器，修改排序规则。TreeMap是基于红黑树实现的，其默认的节点颜色是黑色。当然要注意的一点是插入的键值<strong>不能为null</strong>。</p>
+<hr>
+<h2 id="collections类">Collections类</h2>
+<p>  很多人都会把Collection和Collections弄混，Collection是单例集合的顶层接口，而Collections是针对集合操作的工具类。</p>
+<p>Collections类的常用方法：</p>
+<pre><code class="language-java">public static &lt;T extends Comparable&lt;? super T&gt;&gt; void sort(List&lt;T&gt; list)：将指定的列表 
+public static void reverse(List&lt;?&gt; list)：反转指定元素的顺序
+public static void shuffle(List&lt;?&gt; list)：使用默认源随机排列指定的列表
+</code></pre>
 
                         </div>
                         
@@ -213,9 +378,9 @@
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/response-chong-ding-xiang/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=qzone&title=Response重定向&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=weibo&title=Response重定向 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/java-ji-he-bi-ji/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/java-ji-he-bi-ji/&sharesource=qzone&title=java集合笔记&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/java-ji-he-bi-ji/&sharesource=weibo&title=java集合笔记 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -226,8 +391,8 @@
                                                                                     <span class="tag ">
                         
                         
-                        <a href="https://pizssn.github.io/tag/0O7aJtjrr/">#
-                    servlet
+                        <a href="https://pizssn.github.io/tag/K1jdUh6Je/">#
+                    集合
                         </a>
                         
                             
@@ -245,13 +410,9 @@
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/duo-xian-cheng/">
-                                                                                            初识多线程
-                                                                                        </a>
-                                                                                        
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
-                                                                                                    ServletContext对象
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/">
+                                                                                                    Date类以及Calendar类
                                                                                                 </a>
                                                                                                 
                                                                                 </section>

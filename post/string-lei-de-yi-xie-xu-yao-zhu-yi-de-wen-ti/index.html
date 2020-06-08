@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                Response重定向
+                                String类的一些需要注意的问题
                             </h1>
                             
                                     <!--zh-->
@@ -168,15 +168,15 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-14</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-01-15</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">0.4
+                                    href="#">3.0
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">104</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">755</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
-                                <a href="https://pizssn.github.io/tag/0O7aJtjrr/">servlet</a>
+                                <a href="https://pizssn.github.io/tag/eE-Q97Zbk/">java常用类</a>
                                 
                             </span>
                                             
@@ -188,21 +188,67 @@
                         </header>
                         
                         <div class="post-content">
-                            <p> web资源B在收到客户端A请求后，B会通知A客户端去访问另外一个WEB资源C，这个过程即为重定向<br>
-<img src="https://pizssn.github.io/post-images/1590544001570.png" alt="" loading="lazy"></p>
-<ul>
-<li>语法</li>
-</ul>
-<pre><code class="language-java">response.sendRedirect(&quot;/r/image&quot;);
+                            <h2 id="一-string-s-new-stringhello与string-s-hello有什么区别">一、String s = new String[&quot;hello&quot;]与String s = &quot;hello&quot;有什么区别？</h2>
+<p>相信很多人都面对过这个问题，其实也不难理解。</p>
+<p>  String s = new String[&quot;hello&quot;]会先检查常量池当中是否有hello对象，有则返回对象，没有就创建对应的实例对象。然后在堆中 new String (&quot;hello&quot;)，然后将对象地址赋值给s。<br>
+  String s = &quot;hello&quot;会先到常量池中查找是否存在hello这个字符串，如果有，那么返回已经存在字符串的引用，如果不存在,那么就创建字符串对象，并且返回引用。</p>
+<p><strong>他们的区别就是：</strong><br>
+  前者会在堆中开辟一个空间，会创建两个对象（如果方法区的常量池中无你所需要的变量）<br>
+  后者只会创建一个对象（在方法区的常量池中寻找需要的变量）</p>
+<pre><code class="language-java">String s1 = new String(&quot;hello!&quot;);
+        String s2 = &quot;hello!&quot;;
+        System.out.println(s1 == s2);//比较的地址值，此地址值new出来的是指向的是堆里面的地址，然后再指向方法区的某个地址。直接创建的直接指向方法区的某个地址。
+        System.out.println(s1.equals(s2));//比较的内容（重写之后的）
 </code></pre>
-<p><br></br><br>
-<strong>请求转发和重定向的区别</strong></p>
+<p>结果<br>
+<img src="https://img-blog.csdnimg.cn/20200604215448280.png" alt="" loading="lazy"></p>
+<h2 id="二-string-s-与string-s-null意义相同吗">二、String s = &quot;&quot;与String s = NULL意义相同吗？</h2>
+<p>不相同</p>
+<p>前者表示字符串为空<br>
+后者表示字符串对象为空</p>
+<h2 id="三-字符串的转换功能">三、字符串的转换功能</h2>
+<p>byte[] getBytes()：把字符串转换为字节数组<br>
+char[] toCharArray()：把字符串转换为字符数组<br>
+Static String valueOf(char[] chs)：把字符数组转化为字符串<br>
+Static String valueOf(int i)：把int类型的数据转换为字符串<br>
+······<br>
+<strong>注意</strong>：String类的valueOf方法可以把<strong>任意类型</strong>的数据转成字符串</p>
+<h2 id="四-字符串的传参">四、字符串的传参</h2>
+<p>  String作为参数传递，效果和基本类型作为参数传递是一样的，形式参数的改变不影响实际参数。而StringBuffer就是引用类型，形式参数的改变直接影响实际参数。</p>
+<pre><code class="language-java">public class StringBufferDemo {
+    public static void main(String[] args) {
+        String s1 = &quot;hello&quot;;
+        String s2 = &quot;world&quot;;
+        System.out.println(s1 + s2);
+        change(s1, s2);//String在这里是作为形参传递，不改变实际上的值
+        System.out.println(s1 + s2);
+        StringBuffer sb1 = new StringBuffer(&quot;hello&quot;);
+        StringBuffer sb2 = new StringBuffer(&quot;world&quot;);
+        System.out.println(sb1 + &quot;&quot; + sb2);
+        change(sb1, sb2);
+        System.out.println(sb1 + &quot;&quot; + sb2);
+    }
+
+    public static void change(String str1, String str2) {
+        str1 = str2;
+        str2 = str1 + str2;
+    }
+
+    public static void change(StringBuffer str1, StringBuffer str2) {
+        str1 = str2;
+        str2.append(str1);
+    }
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200604221812221.png" alt="在这里插入图片描述" loading="lazy"></figure>
+<h2 id="五-stringstringbufferstringbuilder的区别">五、String,StringBuffer,StringBuilder的区别</h2>
 <ul>
-<li>相同点<br>
-页面都会发生跳转</li>
-<li>不同点<br>
-请求转发的时候，URL不会发生变化，状态码：307<br>
-重定向的时候，URL会发生变化，状态码：302</li>
+<li>String是内容不可变的，而StringBuffer，StringBuilder都是内容可变的</li>
+<li>在多线程下而言，StringBuffer是同步的，数据安全，但是效率低；而StringBuilder是不同步的，数据不安全，效率高。</li>
+</ul>
+<h2 id="六-stringbuffer和数组的区别">六、StringBuffer和数组的区别</h2>
+<ul>
+<li>相同点：二者都可以看做是一个容器，装其他的数据。</li>
+<li>不同点：StringBuffer的数据最终是一个字符串数据；而数组可以放置多种数据，但必须是同一种数据类型。</li>
 </ul>
 
                         </div>
@@ -213,9 +259,9 @@
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/response-chong-ding-xiang/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=qzone&title=Response重定向&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=weibo&title=Response重定向 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/string-lei-de-yi-xie-xu-yao-zhu-yi-de-wen-ti/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/string-lei-de-yi-xie-xu-yao-zhu-yi-de-wen-ti/&sharesource=qzone&title=String类的一些需要注意的问题&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/string-lei-de-yi-xie-xu-yao-zhu-yi-de-wen-ti/&sharesource=weibo&title=String类的一些需要注意的问题 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -226,8 +272,8 @@
                                                                                     <span class="tag ">
                         
                         
-                        <a href="https://pizssn.github.io/tag/0O7aJtjrr/">#
-                    servlet
+                        <a href="https://pizssn.github.io/tag/eE-Q97Zbk/">#
+                    java常用类
                         </a>
                         
                             
@@ -245,13 +291,13 @@
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/duo-xian-cheng/">
-                                                                                            初识多线程
+                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/bigdecimal-jie-jue-float-yu-double-de-jing-du-wen-ti/">
+                                                                                            BigDecimal——解决float与double的精度问题
                                                                                         </a>
                                                                                         
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
-                                                                                                    ServletContext对象
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/">
+                                                                                                    线程安全及案例
                                                                                                 </a>
                                                                                                 
                                                                                 </section>

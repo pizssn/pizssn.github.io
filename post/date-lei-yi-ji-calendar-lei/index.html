@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                Response重定向
+                                Date类以及Calendar类
                             </h1>
                             
                                     <!--zh-->
@@ -168,15 +168,15 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-10-14</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-03-09</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">0.4
+                                    href="#">2.3
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">104</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">554</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
-                                <a href="https://pizssn.github.io/tag/0O7aJtjrr/">servlet</a>
+                                <a href="https://pizssn.github.io/tag/eE-Q97Zbk/">java常用类</a>
                                 
                             </span>
                                             
@@ -188,22 +188,59 @@
                         </header>
                         
                         <div class="post-content">
-                            <p> web资源B在收到客户端A请求后，B会通知A客户端去访问另外一个WEB资源C，这个过程即为重定向<br>
-<img src="https://pizssn.github.io/post-images/1590544001570.png" alt="" loading="lazy"></p>
-<ul>
-<li>语法</li>
-</ul>
-<pre><code class="language-java">response.sendRedirect(&quot;/r/image&quot;);
+                            <p>Date类和Calendar类均是对时间进行的一些表示。</p>
+<p>首先来看一下Date类的构造方法：<br>
+  Date()：根据当前的默认毫秒值创建日期对象<br>
+  Date(long date)：根据给定的毫秒值创建日期对象</p>
+<pre><code class="language-java">System.out.println(new Date());//结果：Fri Jun 05 15:09:27 CST 2020
+System.out.println(new Date(1000*60*60));//结果：Thu Jan 01 09:00:00 CST 1970
+//从1970年凌晨的时间算起，之所以是Thu Jan 01 09:00:00 CST 1970，是因为我们是东八区
 </code></pre>
-<p><br></br><br>
-<strong>请求转发和重定向的区别</strong></p>
+<hr>
+<p>  当然表示日期我们最常用的就是SimpleDateFormat类了，SimpleDateFormat是DateFormat的具体子类，而DateFormat是可以进行日期和字符串的格式化解析的一个抽象类。<br>
+<strong>SimpleDateFormat的构造方法：</strong><br>
+  SimpleDateFormat()：默认模式<br>
+  SimpleDateFormat(String pattern)：给定的模式</p>
+<table>
+<thead>
+<tr>
+<th>年 y</th>
+<th>月 M</th>
+<th>日 d</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>时 H</td>
+<td>分 m</td>
+<td>秒 s</td>
+</tr>
+</tbody>
+</table>
+<p>  当然在你得到当前日期信息之后，你还需要进行格式化，将其转化为我们能看的懂得信息。</p>
 <ul>
-<li>相同点<br>
-页面都会发生跳转</li>
-<li>不同点<br>
-请求转发的时候，URL不会发生变化，状态码：307<br>
-重定向的时候，URL会发生变化，状态码：302</li>
+<li>Date → String(格式化)<br>
+public final String format(Date date)</li>
+<li>String → Date(解析)<br>
+public Date parse(String source)</li>
 </ul>
+<p>  举个栗子,获取现在的年月日以及时间</p>
+<pre><code class="language-java">String s = new SimpleDateFormat(&quot;yyyy年MM月dd日 HH:mm:ss&quot;).format(d);
+</code></pre>
+<p>注意：时分秒要用<code>:</code>号隔开。</p>
+<hr>
+<p>还有一个表示时间的类为<strong>Calendar类</strong><br>
+  Calender为特定瞬间与一组诸如YEAR、MONTH、DAY_OF_MONTH、HOUR等日历字段之间的转换提供了一些方法，并为操作日历字段（如获得下星期的日期）提供了一些方法</p>
+<p>  public int get(int field)：返回给定日历字段的值，日历类中的每个日历字段都是静态的成员变量，并且是int类型<br>
+  public abstract void add(int field,int amount)：根据给定的日历字段和对应的时间，来对当前的日历进行操作<br>
+  public final void set(int year,int month,int date)：设置当前日期的年月日</p>
+<p>获取当前日期</p>
+<pre><code class="language-java">Calendar rightNow = Calendar.getInstance();//因为Calendar是抽象类，不能实例化对象，所以这里返回的是子类的对象
+int year = rightNow.get(Calendar.YEAR);
+int month = rightNow.get(Calendar.MONTH)+1;//之所以加1，是因为MONTH是从零开始的
+int date = rightNow.get(Calendar.DATE);
+System.out.println(year+&quot;年&quot;+month+&quot;月&quot;+date+&quot;日&quot;);
+</code></pre>
 
                         </div>
                         
@@ -213,9 +250,9 @@
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/response-chong-ding-xiang/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=qzone&title=Response重定向&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/response-chong-ding-xiang/&sharesource=weibo&title=Response重定向 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/&sharesource=qzone&title=Date类以及Calendar类&pics=https://pizssn.github.io/images/avatar.png?v=1591582296104&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/date-lei-yi-ji-calendar-lei/&sharesource=weibo&title=Date类以及Calendar类 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591582296104 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -226,8 +263,8 @@
                                                                                     <span class="tag ">
                         
                         
-                        <a href="https://pizssn.github.io/tag/0O7aJtjrr/">#
-                    servlet
+                        <a href="https://pizssn.github.io/tag/eE-Q97Zbk/">#
+                    java常用类
                         </a>
                         
                             
@@ -245,13 +282,13 @@
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/duo-xian-cheng/">
-                                                                                            初识多线程
+                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/java-ji-he-bi-ji/">
+                                                                                            java集合笔记
                                                                                         </a>
                                                                                         
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
-                                                                                                    ServletContext对象
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/bigdecimal-jie-jue-float-yu-double-de-jing-du-wen-ti/">
+                                                                                                    BigDecimal——解决float与double的精度问题
                                                                                                 </a>
                                                                                                 
                                                                                 </section>
