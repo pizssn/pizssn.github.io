@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                线程方法学习
+                                HashMap你必须知道的那些知识点
                             </h1>
                             
                                     <!--zh-->
@@ -168,15 +168,15 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-11-25</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-04-03</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">4.4
+                                    href="#">2.2
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">990</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">626</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
-                                <a href="https://pizssn.github.io/tag/TNLvjhjjo/">线程</a>
+                                <a href="https://pizssn.github.io/tag/K1jdUh6Je/">集合</a>
                                 
                             </span>
                                             
@@ -188,171 +188,25 @@
                         </header>
                         
                         <div class="post-content">
-                            <p>  列举了几个线程常用方法。</p>
-<h2 id="线程停止">线程停止</h2>
-<ol>
-<li>建议线程正常停止，利用次数，不建议死循环</li>
-<li>建议使用标志位，设置一个标志位</li>
-<li>不要使用stop或者destroy等过时或JDK不建议使用的法</li>
-</ol>
-<pre><code class="language-java">public class Demo1 implements Runnable {
-    //设置一个标识位
-    private boolean flag = true;
-
-    @Override
-    public void run() {
-        int i = 0;
-        while (flag) {
-            System.out.println(&quot;run...Thread&quot; + i++);
-        }
-    }
-
-    //设置一个公开的方法停止线程，转换标志位
-    public void stop() {
-        this.flag = false;
-    }
-
-    public static void main(String[] args) {
-        Demo1 d = new Demo1();
-        new Thread(d).start();
-        for (int i = 0; i &lt; 10000; i++) {
-            System.out.println(&quot;main&quot; + i);
-            if (i == 9000) {
-                //调用stop方法切换标志位，让线程停止
-                d.stop();
-                System.out.println(&quot;该线程停止&quot;);
-            }
-        }
-    }
-}
-</code></pre>
-<h2 id="线程休眠">线程休眠</h2>
-<p>  sleep() 的作用是让当前线程休眠，即当前线程会从“运行状态”进入到“休眠(阻塞)状态”。sleep()会指定休眠时间，线程休眠的时间会大于/等于该休眠时间；在线程重新被唤醒时，它会由“阻塞状态”变成“就绪状态”，从而等待cpu的调度执行。<br>
-  <strong>注意：</strong><code>sleep()</code>和<code>wait()</code>是有区别的。wait()的作用是让当前线程由“运行状态”进入“等待(阻塞)状态”的同时，也会释放同步锁。而sleep()的作用是也是让当前线程由“运行状态”进入到“休眠(阻塞)状态”。但是，<mark>wait()会释放对象的同步锁，而sleep()则不会释放锁。</mark></p>
-<pre><code class="language-java">import java.text.SimpleDateFormat;
-import java.util.Date;
-
-//sleep的功能
-public class Demo2 {
-
-    public static void main(String[] args) throws InterruptedException {
-        //打印当前系统时间
-        Date currentTime = new Date();//获取系统当前时间
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                System.out.println(new SimpleDateFormat(&quot;HH:mm:ss&quot;).format(currentTime));
-                currentTime = new Date();//刷新系统当前时间
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-    public static void TimeDown(int num) throws InterruptedException {
-        //模拟倒计时的功能
-        while (true) {
-            Thread.sleep(1000);
-            System.out.println(num--);
-            if (num &lt; 0)
-                break;
-        }
-    }
-}
-</code></pre>
-<h2 id="线程礼让">线程礼让</h2>
-<p>  只是让原来已经执行的线程先退出来重新竞争资源，还是得看CPU分配。</p>
-<pre><code class="language-java">public class Demo3 {
-    public static void main(String[] args) {
-        MyYield m = new MyYield();
-        new Thread(m, &quot;a&quot;).start();
-        new Thread(m, &quot;b&quot;).start();
-        new Thread(m, &quot;c&quot;).start();
-    }
-}
-
-class MyYield implements Runnable {
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + &quot;线程开始执行&quot;);
-        Thread.yield();//线程礼让
-        System.out.println(Thread.currentThread().getName() + &quot;线程停止执行&quot;);
-    }
-}
-</code></pre>
-<h2 id="线程插队">线程插队</h2>
-<p>  使用join()方法，可实现&quot;插队&quot;效果。当插队的线程运行结束后，其他线程将继续执行。</p>
-<pre><code class="language-java">public class Demo4 implements Runnable {
-    @Override
-    public void run() {
-        for (int i = 0; i &lt; 100; i++) {
-            System.out.println(&quot;线程VIP来了！&quot; + i);
-        }
-    }
-    
-    public static void main(String[] args) throws InterruptedException {
-        //启动我们的线程
-        Demo4 j = new Demo4();
-        Thread thread = new Thread(j);
-        thread.start();
-        //主线程
-        for (int i = 0; i &lt; 500; i++) {
-            if (i == 200) {
-                thread.join();//插队
-            }
-            System.out.println(&quot;main&quot; + i);
-        }
-    }
-}
-</code></pre>
-<h2 id="线程优先级">线程优先级</h2>
-<p>  可以通过<code>setPriority(优先级)</code>方法设置线程的优先级，优先级从1~10。<br>
-  <mark>注意：优先级高的不一定先行执行；</mark></p>
-<pre><code class="language-java">//测试线程的优先级
-public class Demo5 {
-    public static void main(String[] args) {
-        System.out.println(Thread.currentThread().getName() + &quot;----&quot; + Thread.currentThread().getPriority());
-        Mypriority mypriority = new Mypriority();
-        Thread t1 = new Thread(mypriority);
-        Thread t2 = new Thread(mypriority);
-        Thread t3 = new Thread(mypriority);
-        Thread t4 = new Thread(mypriority);
-        Thread t5 = new Thread(mypriority);
-        Thread t6 = new Thread(mypriority);
-
-        //先设置优先级，再启动
-        t1.start();
-
-        t2.setPriority(1);
-        t2.start();
-
-        t3.setPriority(4);
-        t3.start();
-
-        t4.setPriority(Thread.MAX_PRIORITY);
-        t4.start();
-
-        t5.setPriority(3);
-        t5.start();
-
-        t6.setPriority(10);
-        t6.start();
-
-    }
-}
-
-class Mypriority implements Runnable {
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + &quot;----&quot; + Thread.currentThread().getPriority());
-    }
-}
-</code></pre>
-<h2 id="守护线程">守护线程</h2>
-<p>  守护线程，在没有用户线程可服务时会自动离开。优先级：守护线程的优先级比较低，用于为系统中的其它对象和线程提供服务。<br>
-  设置：通过setDaemon(true)来设置线程为“守护线程”；将一个用户线程设置为守护线程的方式是在<mark>线程对象创建</mark>之前，用线程对象的setDaemon方法。</p>
-<pre><code class="language-java">thread.setDaemon(true);//默认是false，表示保护线程。正常的线程都是用户线程。
-</code></pre>
+                            <h2 id="hashmap是如何实现的">HashMap是如何实现的？</h2>
+<p>  HashMap由<strong>数组+链表</strong>组成的，数组是HashMap的主体，链表则是主要为了解决<strong>哈希冲突</strong>而存在的，如果定位到的数组位置不含链表（当前entry的next指向null）,那么对于查找，添加等操作很快，仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度依然为O(1)，因为最新的Entry会插入链表头部，只需要简单改变引用链即可，而对于查找操作来讲，在定位到数组相应的结点之后，还需要遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，<strong>HashMap中的链表出现越少，性能才会越好。</strong></p>
+<h2 id="hashmap是线程安全的吗">HashMap是线程安全的吗？</h2>
+<p>HashMap是<strong>线程不安全</strong>的。<br>
+  在多线程环境下，使用HashMap进行put操作会导致HashMap的Entry链表形成环形数据结构，一旦形成环形数据结构，Entry的next节点永远不为空，就会产生<strong>死循环</strong>，导致CPU利用率接近100%，所以在并发情况下不能使用HashMap。</p>
+<h2 id="那有什么线程安全的结构呢">那有什么线程安全的结构呢？</h2>
+<p><strong>HashTable</strong><br>
+  HashTable是使用<strong>synchronized</strong>来保证线程的安全。当一个线程访问HashTable的同步方法，其他方法访问HashTable的同步方法时，会进入阻塞或者轮询状态。如果线程A使用put进行元素添加，线程B不但不能用put方法添加于元素同是也无法用get方法来获取元素，所以竞争越激烈效率越低，因此它被淘汰了。</p>
+<p><strong>ConcurrentHashMap</strong><br>
+  HashTable容器在竞争激烈的并发环境效率低下的原因是所有访问HashTable的线程都必须竞争同一把锁。那假如容器有多把锁，每一把锁用于锁住容器中一部分数据，那么多线程访问容器里不同数据段的数据时，线程间就不会存在锁竞争，从而可以有效提高并发访问率，这就是ConcurrentHashMap的<strong>锁分段技术</strong>。将数据分成一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一段数据的时候，其他段的数据也能被其他线程访问。<br>
+<img src="https://img-blog.csdnimg.cn/20200608215305686.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+<strong>ConcurrentHashMap插入、查询逻辑</strong></p>
+<ul>
+<li>put：<br>
+1.定位segment并确保定位的Segment已初始化<br>
+2.调用Segment的put方法。</li>
+<li>Get：<br>
+先定位Segment，再定位HashEntry</li>
+</ul>
 
                         </div>
                         
@@ -362,9 +216,9 @@ class Mypriority implements Runnable {
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/&sharesource=qzone&title=线程方法学习&pics=https://pizssn.github.io/images/avatar.png?v=1591706339416&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/&sharesource=weibo&title=线程方法学习 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591706339416 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/hashmap-ni-bi-xu-zhi-dao-de-na-xie-zhi-shi-dian/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/hashmap-ni-bi-xu-zhi-dao-de-na-xie-zhi-shi-dian/&sharesource=qzone&title=HashMap你必须知道的那些知识点&pics=https://pizssn.github.io/images/avatar.png?v=1591706339416&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/hashmap-ni-bi-xu-zhi-dao-de-na-xie-zhi-shi-dian/&sharesource=weibo&title=HashMap你必须知道的那些知识点 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591706339416 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -375,8 +229,8 @@ class Mypriority implements Runnable {
                                                                                     <span class="tag ">
                         
                         
-                        <a href="https://pizssn.github.io/tag/TNLvjhjjo/">#
-                    线程
+                        <a href="https://pizssn.github.io/tag/K1jdUh6Je/">#
+                    集合
                         </a>
                         
                             
@@ -394,13 +248,13 @@ class Mypriority implements Runnable {
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/">
-                                                                                            线程安全及案例
+                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/zhu-jie-yu-fan-she-xiao-jie/">
+                                                                                            注解与反射小结
                                                                                         </a>
                                                                                         
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/ru-he-li-jie-lambda-biao-da-shi/">
-                                                                                                    如何理解Lambda表达式
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/java-ji-he-bi-ji/">
+                                                                                                    java集合笔记
                                                                                                 </a>
                                                                                                 
                                                                                 </section>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://pizssn.github.io</id>
     <title>pizssn</title>
-    <updated>2020-06-08T02:11:40.894Z</updated>
+    <updated>2020-06-09T12:39:03.410Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://pizssn.github.io"/>
     <link rel="self" href="https://pizssn.github.io/atom.xml"/>
@@ -10,6 +10,260 @@
     <logo>https://pizssn.github.io/images/avatar.png</logo>
     <icon>https://pizssn.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, pizssn</rights>
+    <entry>
+        <title type="html"><![CDATA[JVM个人小结]]></title>
+        <id>https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/</id>
+        <link href="https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/">
+        </link>
+        <updated>2020-04-28T01:43:40.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="什么是jvm">什么是JVM？</h2>
+<blockquote>
+<p>  JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。<br>
+  引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。Java语言使用Java虚拟机屏蔽了与具体平台相关的信息，使得Java语言编译程序只需生成在Java虚拟机上运行的目标代码（字节码），就可以在多种平台上不加修改地运行。</p>
+</blockquote>
+<p><strong>JVM的体系结构：</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200609160011336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></figure>
+<hr>
+<h2 id="类加载器classloader">类加载器（ClassLoader）</h2>
+<p>java提供有3种类加载器<br>
+<strong>引导（Bootstrap）类加载器、扩展（Extension）类加载器、系统（System）类加载器</strong></p>
+<h4 id="类加载器">类加载器</h4>
+<p>  它用来加载 Java 的核心类，是用原生代码来实现的，负责<strong>加载系统类</strong>。$JAVA_HOME中jre/lib/rt.jar里所有的class，由C++实现，不是ClassLoader子类。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以<strong>不允许直接通过引用进行操作</strong>。</p>
+<h4 id="extension类加载器">Extension类加载器</h4>
+<p>Extension类加载器是由ExtClassLoader实现的，负责<strong>加载JRE的扩展目录</strong>，lib/ext或者由java.ext.dirs系统属性指定的目录中的JAR包的类，由Java语言实现。</p>
+<h4 id="system类加载器">System类加载器</h4>
+<p>系统类加载器是由 Sun 的 AppClassLoader实现的，AppClassLoader负责加载应用类的。它负责在JVM启动时加载来自Java命令的-classpath选项、java.class.path系统属性，或者CLASSPATH换将变量所指定的JAR包和类路径。程序可以通过ClassLoader的静态方法getSystemClassLoader()来获取系统类加载器。如果没有特别指定，则用户自定义的类加载器都以此类加载器作为父加载器。由Java语言实现，父类加载器为ExtClassLoader。</p>
+<h4 id="类加载过程">类加载过程</h4>
+<ol>
+<li><strong>加载</strong>：将class文件字节码内容加载到内存中，并将这些静态数据转换成方法区的运行时数据结构，会产生一个类对应Class对象</li>
+<li><strong>链接</strong>：将java类的二进制代码合并到JVM的运行状态之中的过程
+<ul>
+<li>验证：确保加载的类信息符合JVM的规范，无安全问题</li>
+<li>准备：正式为类变量（static）分配内存并 设置类变量默认初始值 的阶段，这些内存都将在方法区中进行分配。</li>
+<li>解析：虚拟机常量池内的符号引用（常量名）替换为直接引用（地址）的过程</li>
+</ul>
+</li>
+<li><strong>初始化</strong>：
+<ul>
+<li>执行类构造器<clinit>()方法的过程。类构造器是由编译期自动收集类中的 所有类变量 的赋值动作和静态代码块中的语句合并产生的</li>
+<li>当初始化一个类的时候，如果法相其父类还没有进行初始化，则需要先触发其父类的初始化</li>
+<li>虚拟机会保证一个类的<clinit>()方法在对线程环境中被正确加锁和同步</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="双亲委派机制确保类的安全性">双亲委派机制（确保类的安全性）</h2>
+<p>  某个特定的类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，依次递归，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器<strong>无法完成</strong>此加载任务时，才自己去加载。这就是加载器的<strong>双亲委派机制</strong>。<br>
+  对于<strong>任意</strong>一个类，都需要由<strong>加载它的类加载器</strong>和这个<strong>类本身</strong>来一同确立其在Java虚拟机中的<strong>唯一性</strong><br>
+  为了系统类的安全，类似“ java.lang.Object”这种核心类，jvm需要保证他们生成的对象都会被认定为同一种类型。即通过<strong>代理模式</strong>，对于 Java 核心库的类的加载工作由引导类加载器来统一完成，保证了 Java 应用所使用的都是<strong>同一个版本的 Java 核心库的类</strong>，是互相兼容的。为了避免用户自己创建java.lang.Object等系统类，类加载采用委托机制，这样可以保证父类加载器优先，父类加载器能找到的类，子加载器就没有机会加载。例如我们自己写一个System类，会发现根本没有机会得到加载。就是因为System类是Bootstrap加载器加载的，就算自己重写，也总是使用Java系统提供的System。</p>
+<h4 id="类加载器间的联系">类加载器间的联系</h4>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/20200609141015161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></figure>
+<h4 id="注意">注意：</h4>
+<p>  虽然上面一直说的是父类加载器，子类加载器，但其实这只是说明一下加载器之间上下层级的关系，而他们本身并不是继承关系，而是<strong>组合关系</strong>。</p>
+<blockquote>
+<p>组合也是实现类的复用的一种方式。组合是把旧类对象作为新类的成员变量组合起来，用以实现新类的功能，用户看到的是新类的方法，而不能看到被组合对象的方法。因此，通常要在新类里使用private修饰被组合的旧类对象。</p>
+</blockquote>
+<p>那为什么类加载器用的是组合关系而不是继承关系呢？<br>
+  因为首先继承在<strong>编译时刻</strong>就已经定义了，因此无法在运行时刻改变从父类继承的实现。父类通常至少定义了部分子类的具体表示。因为继承对子类揭示了其父类的实现细节，所以继承常被认为“<strong>破坏了封装性</strong>” 。子类中的实现与它的父类有紧密的依赖关系，以至于父类实现中的任何变化必然会导致子类发生变化。当你需要复用子类时，实现上的<strong>依赖性</strong>就会产生一些问题<br>
+  而对象组合是通过获得对其他对象的引用而在<strong>运行时刻</strong>动态定义的。组合要求对象遵守彼此的接口约定，进而要求更仔细地定义接口，而这些接口并不妨碍你将一个对象和其他对象一起使用。因为对象只能通过接口访问，所以我们<strong>并不破坏封装性</strong>；只要类型一致，运行时刻还可以用一个对象来替代另一个对象；更进一步，因为对象的实现是基于接口写的，所以实现上存在<strong>较少的依赖关系</strong>。<br>
+　　对象组合对系统设计还有另一个作用，即<strong>优先使用对象组合有助于你保持每个类被封装</strong>，并被集中在单个任务上。</p>
+<hr>
+<h2 id="本地方法栈">本地方法栈</h2>
+<p>  在java程序中，凡是带了native关键字的，说明java的作用范围达不到了，回去调用底层c语言的库，会进入本地方法栈，调用本地方法接口（JNI）。于是本地方法栈将登记native方法，在最终执行的时候，通过JNI加载本地方法库中的方法。</p>
+<h2 id="pc寄存器">PC寄存器</h2>
+<p>  每个线程都有一个程序计数器(PC寄存器)，是线程私有的，就是一个指针, 指向方法区中的方法字节码(用来存储指向像一条指令的地址， 也即将要执行的指令代码)，在执行引擎读取下一条指令,是一个非常小的内存空间，几乎可以忽略不计。</p>
+<h2 id="方法区">方法区</h2>
+<p>  方法区是被所有线程共享，所有字段和方法字节码，以及一些特殊方法，如构造函数，接口代码也在此定义。简单说，所有定义的方法的信息都保存在该区域，此区域属于<strong>共享区间</strong>。<br>
+  <mark>静态变量、常量、类信息(构造方法、接口定义)、运行时的常量池存在方法区中，但是实例变量存在堆内存中，和方法区无关</mark></p>
+<h2 id="java栈">java栈</h2>
+<p>  java栈主管程序的运行，它耳钉生命周期和线程同步；主线程结束，栈内存就释放。java栈的内部保存一个个的栈帧(Stack Frame)，对应着一次次的java方法调用。<br>
+每个栈帧存储着：<br>
+  局部变量表（Local Variables）<br>
+  操作数栈（Operand Stack）（或表达式栈）<br>
+  动态链接（Dynamic Linking）（或指向运行时常量池的方法引用）<br>
+  方法返回地址（return Address）（或方法正常退出或者异常退出的定义）<br>
+后三者也被称为<strong>帧数据区</strong><br>
+注意：对于栈来说，不存在<strong>垃圾回收问题</strong>，一旦线程结束，栈就被回收。</p>
+<h2 id="堆">堆</h2>
+<p>  堆是java虚拟机所管理的内存中最大的一块。java堆是被所有<strong>线程共享</strong>的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是<strong>存放对象实例</strong>，几乎所有的对象实例都在这里分配内存。所有的对象实例和数组都要在堆上分配。java堆是垃圾收集器管理的主要区域，因此很多时候也被称作<strong>GC堆</strong>。</p>
+<p>到这里，我们的JVM内部结构就介绍完了，那么一个完整的jvm运行过程是怎样的呢？</p>
+<hr>
+<h2 id="java虚拟机运行过程">Java虚拟机运行过程</h2>
+<p>  一个类文件首先<strong>加载到方法区</strong>，一些符号引用被<strong>解析</strong>（静态解析）为直接引用或者等到运行时<strong>分派</strong>（动态绑定），经过一系列的<strong>加载</strong>过程（class文件的常量池被加载到方法区的运行时常量池，各种其它的静态存储结构被加载为方法区运行时数据解构等等）<br>
+  然后程序通过Class对象来访问方法区里的各种类型数据，当加载完之后，程序发现了<strong>main方法</strong>，也就是程序入口，那么程序就在<strong>栈</strong>里创建了一个栈帧，逐行读取方法里的代码所转换为的指令，而这些指令大多已经被解析为直接引用了，那么程序通过持有这些直接引用使用指令去方法区中寻找变量对应的字面量来进行方法操作。<br>
+  操作完成后方法返回给调用方，该栈帧出栈。内存空间被<strong>GC回收</strong>，堆里被new的那些也就被垃圾回收机制GC了。<br>
+  全流程包括以下几步：源码编写→编译（javac编译）→类文件被加载到虚拟机（类Class文件结构，虚拟机运行时内存分析，类加载机制）→虚拟机执行二进制字节码（虚拟机字节码执行系统）→垃圾回收（JVM垃圾回收机制）</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[注解与反射小结]]></title>
+        <id>https://pizssn.github.io/post/zhu-jie-yu-fan-she-xiao-jie/</id>
+        <link href="https://pizssn.github.io/post/zhu-jie-yu-fan-she-xiao-jie/">
+        </link>
+        <updated>2020-04-08T05:40:56.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="注解">注解</h2>
+<blockquote>
+<p>Java 注解（Annotation）又称 Java 标注，是 JDK5.0 引入的一种注释机制。Java 语言中的类、方法、变量、参数和包等都可以被标注。和 Javadoc 不同，Java标注可以通过反射获取标注内容。在编译器生成类文件时，标注可以被嵌入到字节码中。Java 虚拟机可以保留标注内容，在运行时可以获取到标注内容， 当然它也支持自定义 Java 标注。</p>
+</blockquote>
+<h2 id="反射">反射</h2>
+<blockquote>
+<p>JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；通过获得Class对形成的对象去调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为java语言的反射机制。</p>
+</blockquote>
+<hr>
+<p>java提供了7个注解，分为内置注解与元注解</p>
+<h2 id="内置注解">内置注解</h2>
+<p>内置注解：</p>
+<ul>
+<li>Override---重写的注解</li>
+<li>Deprecated---不推荐程序员使用，但是可用，或者存在更合适的方式</li>
+<li>SuppressWarnings(String[] value)---镇压警告</li>
+</ul>
+<p><strong>实例</strong></p>
+<pre><code class="language-java">	@Override
+    public String toString() {
+        return super.toString();
+    }
+    @Deprecated
+    public static void test(){
+        System.out.println(&quot;Deprecated&quot;);
+    }
+    @SuppressWarnings(&quot;all&quot;)
+    public static void demo(){
+        ArrayList array = new ArrayList();
+    }
+</code></pre>
+<h2 id="元注解">元注解</h2>
+<p>负责注解其他注解，可以让你自定义注解</p>
+<ul>
+<li>@Targe：用于描述注解的使用范围（即被描述的注解可以用在什么地方）</li>
+<li>@Retention：表示需要在什么级别保存该注释信息，用于描述注解的生命周期(SOURCE&lt;CLASS&lt;RUNTIME)</li>
+<li>@Document：说明该注解将被包含在javadoc中</li>
+<li>@Inherited：说明子类可以继承父类中的该注解</li>
+</ul>
+<p><strong>实例</strong></p>
+<pre><code class="language-java">@MyAnnotation
+public class MetaAnnotationDemo {
+    @MyAnnotation
+    public void test(){
+    }
+}
+@Inherited
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD,ElementType.TYPE})
+@interface MyAnnotation{
+}
+</code></pre>
+<hr>
+<p><strong>反射</strong>：为java提供了动态性，通过获得Class对形成的对象及其进行操作。</p>
+<p>反射的核心就是获取Class方法。因此我们先了解一下什么是<strong>类加载</strong>。</p>
+<ol>
+<li><strong>加载</strong>：将class文件字节码内容加载到内存中，并将这些静态数据转换成方法区的运行时数据结构，会产生一个类对应Class对象</li>
+<li><strong>链接</strong>：将java类的二进制代码合并到JVM的运行状态之中的过程
+<ul>
+<li>验证：确保加载的类信息符合JVM的规范，无安全问题</li>
+<li>准备：正式为类变量（static）分配内存并 设置类变量默认初始值 的阶段，这些内存都将在方法区中进行分配。</li>
+<li>解析：虚拟机常量池内的符号引用（常量名）替换为直接引用（地址）的过程</li>
+</ul>
+</li>
+<li><strong>初始化</strong>：
+<ul>
+<li>执行类构造器<clinit>()方法的过程。类构造器是由编译期自动收集类中的 所有类变量 的赋值动作和静态代码块中的语句合并产生的</li>
+<li>当初始化一个类的时候，如果法相其父类还没有进行初始化，则需要先触发其父类的初始化</li>
+<li>虚拟机会保证一个类的<clinit>()方法在对线程环境中被正确加锁和同步</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>类的主动引用（一定是类的初始化）</strong><br>
+  当虚拟机启动，先初始化main所在的类<br>
+  new一个类的对象<br>
+  调用类的静态成员（除了final常量）和静态方法<br>
+  使用java.lang.reflect包的方法对其类进行反射调用<br>
+  当初始化一个类，如果其父类没有被初始化，则会初始化它的父类</p>
+</blockquote>
+<blockquote>
+<p><strong>类的被动引用（不会发生类的初始化）</strong><br>
+  当访问一个静态域时，只有真声明这个域的类才会被初始化。如：当通过子类引用父类的静态变量，不会导致子类初始化<br>
+  通过数组定义类引用，不会触发此类的初始化<br>
+  引用常量不会触发此类的初始化（常量在链接阶段就存入调用类的常量池中了）</p>
+</blockquote>
+<p>反射有三种获取方式，还有一种是获取基本内置类型包装类的Class：</p>
+<pre><code class="language-java">		//获得Class的方式一：通过对象获得
+        Person person = new Student();
+        Class&lt;? extends Person&gt; aClass1 = person.getClass();
+        //获得Class的方式二：通过forName获得
+        Class&lt;?&gt; aClass2 = Class.forName(&quot;pizssn.Reflection.Student&quot;);
+        //获得Class的方式三：通过类名.Class获得
+        Class&lt;Student&gt; aClass3 = Student.class;
+        //获得Class的方式四：基本内置类型的包装类都有一个Type属性
+        Class&lt;Integer&gt; aClass4 = Integer.TYPE;
+</code></pre>
+<p>在获取到Class对象之后，我们就可以通过反射的一些方法获取到类的一些信息。</p>
+<pre><code class="language-java">       获取类的名字：
+             public String getName()：返回由类对象表示的实体的名称（类，接口，数组类，原始类型或void），作为String。
+             public String getSimpleName()：返回源代码中给出的基础类的简单名称。如果基础类是匿名的，则返回一个空字符串。
+       获取类的属性：
+             public Field getField(String name)：返回一个Field对象，它反映此表示的类或接口的指定公共成员字段类对象。
+             public Field[] getFields()：返回包含一个数组Field对象反射由此表示的类或接口的所有可访问的公共字段类对象。
+             public Field getDeclaredField(String name)：返回一个Field对象，它反映此表示的类或接口的指定已声明字段类对象。
+       获取类的方法：
+             public Method getMethod(String name,Method&lt;?&gt;... parameterTypes)：返回一个方法对象，它反映此表示的类或接口的指定公共成员方法类对象。
+             public Method[] getMethods()：返回包含一个数组方法对象反射由此表示的类或接口的所有公共方法类对象，包括那些由类或接口和那些从超类和超接口继承的声明。
+             public Method[] getDeclaredMethods()：返回包含一个数组方法对象反射的类或接口的所有声明的方法，通过此表示类对象，包括公共，保护，默认（包）访问和私有方法，但不包括继承的方法。
+       获取类的构造器：
+             public Constructor&lt;T&gt; getConstructor(Method&lt;?&gt;... parameterTypes)：返回一个Constructor对象，该对象反映Constructor对象表示的类的指定的公共类函数。
+             public Constructor&lt;?&gt;[] getConstructors()：返回一个包含Constructor对象的数组，反映由此Constructor对象表示的类的所有公共类函数。
+             public Constructor&lt;?&gt;[] getDeclaredConstructors()：返回反映Constructor对象表示的类声明的所有Constructor对象的数组类。
+</code></pre>
+<p>通过反射动态创建对象与方法</p>
+<pre><code class="language-java">       public T newInstance()：创建由此类对象表示的类的新实例。该类被实例化为一个具有空参数列表的new表达式。
+                              如果类尚未初始化，则初始化该类。
+       public Object invoke(Object obj,Object... args)：在具有指定参数的方法对象上调用此方法对象表示的基础方法。
+
+       public void setAccessible(boolean flag)：将此对象的accessible标志设置为指示的布尔值。
+                                               true的值表示反射对象应该在使用时抑制Java语言访问检查。
+                                               false的值表示反映的对象应该强制执行Java语言访问检查。
+</code></pre>
+<p>之所以将注解和反射一起放在这总结，是因为我们可以通过反射获取注解信息。</p>
+<pre><code class="language-java">	    //通过反射获得注解
+        Annotation[] annotations = aClass.getAnnotations();
+        
+        //获得注解的value值
+        tablePizssn annotation = (tablePizssn) aClass.getAnnotation(tablePizssn.class);
+</code></pre>
+<p>当然，<strong>反射也是动态代理的一种实现方式。</strong><br>
+  这种实现方式需要使用到一个类Proxy和一个接口InvocationHandler。Proxy是所有动态类的父类，它提供一个静态方法来创建动态代理的class对象和实例，这个方法就是newProxyInstance()。<br>
+  反射实现动态代理的逻辑：代理类调用接口方法→调用invocationHandler.invoke方法→反射调用指定被代理类方法→Proxy.newProxyInstance 生成代理类</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[HashMap你必须知道的那些知识点]]></title>
+        <id>https://pizssn.github.io/post/hashmap-ni-bi-xu-zhi-dao-de-na-xie-zhi-shi-dian/</id>
+        <link href="https://pizssn.github.io/post/hashmap-ni-bi-xu-zhi-dao-de-na-xie-zhi-shi-dian/">
+        </link>
+        <updated>2020-04-03T12:34:49.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="hashmap是如何实现的">HashMap是如何实现的？</h2>
+<p>  HashMap由<strong>数组+链表</strong>组成的，数组是HashMap的主体，链表则是主要为了解决<strong>哈希冲突</strong>而存在的，如果定位到的数组位置不含链表（当前entry的next指向null）,那么对于查找，添加等操作很快，仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度依然为O(1)，因为最新的Entry会插入链表头部，只需要简单改变引用链即可，而对于查找操作来讲，在定位到数组相应的结点之后，还需要遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，<strong>HashMap中的链表出现越少，性能才会越好。</strong></p>
+<h2 id="hashmap是线程安全的吗">HashMap是线程安全的吗？</h2>
+<p>HashMap是<strong>线程不安全</strong>的。<br>
+  在多线程环境下，使用HashMap进行put操作会导致HashMap的Entry链表形成环形数据结构，一旦形成环形数据结构，Entry的next节点永远不为空，就会产生<strong>死循环</strong>，导致CPU利用率接近100%，所以在并发情况下不能使用HashMap。</p>
+<h2 id="那有什么线程安全的结构呢">那有什么线程安全的结构呢？</h2>
+<p><strong>HashTable</strong><br>
+  HashTable是使用<strong>synchronized</strong>来保证线程的安全。当一个线程访问HashTable的同步方法，其他方法访问HashTable的同步方法时，会进入阻塞或者轮询状态。如果线程A使用put进行元素添加，线程B不但不能用put方法添加于元素同是也无法用get方法来获取元素，所以竞争越激烈效率越低，因此它被淘汰了。</p>
+<p><strong>ConcurrentHashMap</strong><br>
+  HashTable容器在竞争激烈的并发环境效率低下的原因是所有访问HashTable的线程都必须竞争同一把锁。那假如容器有多把锁，每一把锁用于锁住容器中一部分数据，那么多线程访问容器里不同数据段的数据时，线程间就不会存在锁竞争，从而可以有效提高并发访问率，这就是ConcurrentHashMap的<strong>锁分段技术</strong>。将数据分成一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一段数据的时候，其他段的数据也能被其他线程访问。<br>
+<img src="https://img-blog.csdnimg.cn/20200608215305686.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+<strong>ConcurrentHashMap插入、查询逻辑</strong></p>
+<ul>
+<li>put：<br>
+1.定位segment并确保定位的Segment已初始化<br>
+2.调用Segment的put方法。</li>
+<li>Get：<br>
+先定位Segment，再定位HashEntry</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[java集合笔记]]></title>
         <id>https://pizssn.github.io/post/java-ji-he-bi-ji/</id>
@@ -677,232 +931,6 @@ public class Demo1 {
     }
 }
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[初识多线程]]></title>
-        <id>https://pizssn.github.io/post/duo-xian-cheng/</id>
-        <link href="https://pizssn.github.io/post/duo-xian-cheng/">
-        </link>
-        <updated>2019-11-14T02:02:12.000Z</updated>
-        <content type="html"><![CDATA[<p><strong>什么是线程？</strong></p>
-<blockquote>
-<p>线程是操作系统能够进行运算调度的最小单位，它被包含在进程之中，是进程中的实际运作单位。一条线程指的是进程中一个单一顺序的控制流，一个进程中可以并发多个线程，每条线程并行执行不同的任务。</p>
-</blockquote>
-<p><strong>什么是进程？</strong></p>
-<blockquote>
-<p>进程是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础。在早期面向进程设计的计算机结构中，进程是程序的基本执行实体；在当代面向线程设计的计算机结构中，进程是线程的容器。程序是指令、数据及其组织形式的描述，进程是程序的实体。</p>
-</blockquote>
-<p><strong>回到今天的主题，多线程；</strong><br>
- 把多个任务分给多个线程,能提高其效率</p>
-<ul>
-<li>单个线程<br>
-<img src="https://pizssn.github.io/post-images/1590546199547.png" alt="" loading="lazy"></li>
-<li>多个线程<br>
-<img src="https://pizssn.github.io/post-images/1590546245872.png" alt="" loading="lazy"></li>
-</ul>
-<p><font size=4><strong>实现多线程的三种方式</strong></font></p>
-<p><strong>1. 继承Thread类，重写run()方法</strong><br>
-<em>Thread本质上也是实现了Runnable接口的一个实例，它代表了一个线程的实例，并且，启动线程的唯一方法就是通过Thread类的start()方法</em></p>
-<pre><code class="language-java">//创建线程方式一；继承Thread类，重写run方法，调用start方法开启线程
-//线程开启不一定立即执行，而是由CPU调度执行
-public class Demo1 extends Thread{
-    @Override
-    public void run() {
-        for (int i=0;i&lt;10;i++)
-            System.out.println(&quot;我在练习代码！&quot;+i);
-    }
-    //main线程，主线程
-    public static void main(String[] args) {
-        //创建一个线程对象
-        Demo1 t = new Demo1();
-        //调用start方法开启线程
-        t.start();
-        for (int i=0;i&lt;2000;i++)
-            System.out.println(&quot;我在看视频&quot;+i);
-    }
-}
-</code></pre>
-<p><br></br><br>
-<strong>2. 实现Runnable接口，并实现run()方法</strong><br>
-<em>1）自定义类并实现Runnable接口，实现run()方法。</em><br>
-<em>2）创建Thread对象，用实现Runnable接口的对象作为参数实例化该Thread对象</em><br>
-<em>3）调用Thread的start()方法</em></p>
-<pre><code class="language-java">//创建线程方法二：实现runnable接口，重写run方法，执行线程需要丢入runnable接口实现类，再调用start方法
-public class Demo3 implements Runnable {
-    public void run() {
-        for (int i=0;i&lt;10;i++)
-            System.out.println(&quot;我在练习代码！&quot;+i);
-    }
-    //main线程，主线程
-    public static void main(String[] args) {
-        //创建一个线程对象
-        Demo3 t = new Demo3();
-        //Thread thread = new Thread(t);
-        //thread.start();
-        new Thread(t).start();
-        for (int i=0;i&lt;20;i++)
-            System.out.println(&quot;我在看视频&quot;+i);
-    }
-}
-</code></pre>
-<p><br></br><br>
-<strong>3. 实现Callable接口，重写call()方法</strong><br>
-<em>1) 实现Callable接口，需要返回值类型</em><br>
-<em>2) 重写call方法，需要抛出异常</em><br>
-<em>3) 创建目标对象</em><br>
-<em>4) 创建执行服务：ExecutorService ser = Executors.newFixedThreadPoll(1);</em><br>
-<em>5) 提交执行：Future<Boolean> result = ser.submit(t);</em><br>
-<em>6) 获取结果：boolean r = result.get();</em><br>
-<em>7) 关闭服务：ser.shutdownNow();</em></p>
-<pre><code class="language-java">import java.util.concurrent.*;
-//线程创建方式三：实现Callable接口，重写call()方法
-public class Demo4 implements Callable {
-    @Override
-    public Object call() throws Exception {
-        for (int i=0;i&lt;10;i++)
-            System.out.println(&quot;我在练习代码！&quot;+i);
-        return true;
-    }
-
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Demo4 t = new Demo4();
-        //创建执行服务
-        ExecutorService ser = Executors.newFixedThreadPool(2);
-        //提交执行
-        Future&lt;Boolean&gt; r = ser.submit(t);
-
-        for (int i=0;i&lt;2000;i++)
-            System.out.println(&quot;我在看视频&quot;+i);
-        //获取结果
-        boolean rs = r.get();
-        //关闭服务
-        ser.shutdown();
-    }
-}
-</code></pre>
-<p><br></br></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Response重定向]]></title>
-        <id>https://pizssn.github.io/post/response-chong-ding-xiang/</id>
-        <link href="https://pizssn.github.io/post/response-chong-ding-xiang/">
-        </link>
-        <updated>2019-10-14T01:07:32.000Z</updated>
-        <content type="html"><![CDATA[<p> web资源B在收到客户端A请求后，B会通知A客户端去访问另外一个WEB资源C，这个过程即为重定向<br>
-<img src="https://pizssn.github.io/post-images/1590544001570.png" alt="" loading="lazy"></p>
-<ul>
-<li>语法</li>
-</ul>
-<pre><code class="language-java">response.sendRedirect(&quot;/r/image&quot;);
-</code></pre>
-<p><br></br><br>
-<strong>请求转发和重定向的区别</strong></p>
-<ul>
-<li>相同点<br>
-页面都会发生跳转</li>
-<li>不同点<br>
-请求转发的时候，URL不会发生变化，状态码：307<br>
-重定向的时候，URL会发生变化，状态码：302</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ServletContext对象]]></title>
-        <id>https://pizssn.github.io/post/servletcontext-dui-xiang/</id>
-        <link href="https://pizssn.github.io/post/servletcontext-dui-xiang/">
-        </link>
-        <updated>2019-10-10T06:19:22.000Z</updated>
-        <content type="html"><![CDATA[<p>  web容器在启动的时候，它会为每个web程序都创建一个对应的ServletContext对象，他代表了当前的web应用。</p>
-<p><strong>共享数据</strong><br>
-  在这个servlet中的保存的数据，可以在另外一个servlet中拿到。</p>
-<ul>
-<li>通过ServletContext保存数据</li>
-</ul>
-<pre><code class="language-java">package pizssn.servlet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-public class ContextServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-//        this.getInitParameter()     初始化参数；
-//        this.getServletConfig()     servlet参数；
-//        this.getServletContext()    servlet上下文；
-        ServletContext context = this.getServletContext();
-        String username = &quot;pizssn&quot;;     /*数据*/
-        context.setAttribute(&quot;username&quot;, username);      /*将一个数据保存在ServletContext中，名字为context*/
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
-}
-</code></pre>
-<ul>
-<li>从ServletContext获取数据</li>
-</ul>
-<pre><code class="language-java">package pizssn.servlet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-public class GetServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletContext context = this.getServletContext();
-        String username = (String) context.getAttribute(&quot;username&quot;);
-        resp.setContentType(&quot;text/html&quot;);
-        resp.setCharacterEncoding(&quot;utf-8&quot;);
-        resp.getWriter().print(&quot;名字：&quot; + username);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
-}
-</code></pre>
-<p><br></br><br>
-<strong>获取初始化参数</strong><br>
-  在xml文件配置一些web应用初始化参数</p>
-<pre><code class="language-xml">&lt;context-param&gt;
-        &lt;param-name&gt;url&lt;/param-name&gt;
-        &lt;param-value&gt;jdbc:mysql://localhost:3306/mybaties&lt;/param-value&gt;
-&lt;/context-param&gt;
-</code></pre>
-<p><br></br><br>
-<strong>请求转发</strong><br>
-  A想拿到的资源只能从C拿到，但是A只能接触到B，B就去C找相应资源，再转给A<br>
-<img src="https://pizssn.github.io/post-images/1590495909565.png" alt="" loading="lazy"></p>
-<ul>
-<li>语法</li>
-</ul>
-<pre><code class="language-java">        ServletContext context = this.getServletContext();
-//        RequestDispatcher requestDispatcher = context.getRequestDispatcher(&quot;/SD1&quot;);
-//        requestDispatcher.forward(req,resp);
-        context.getRequestDispatcher(&quot;/SD1&quot;).forward(req,resp);
-</code></pre>
-<p><br></br><br>
-<strong>读取资源文件</strong><br>
-  Properties(需要一个文件流)</p>
-<ul>
-<li>在java目录下新建Properties</li>
-<li>在resources目录下新建Properties<br>
-两者都会被打包到同一个路径下：class（classpath）</li>
-</ul>
 ]]></content>
     </entry>
 </feed>

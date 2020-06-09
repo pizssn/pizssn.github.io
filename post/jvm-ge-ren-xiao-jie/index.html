@@ -159,7 +159,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                线程方法学习
+                                JVM个人小结
                             </h1>
                             
                                     <!--zh-->
@@ -168,15 +168,15 @@
                                         <a itemprop="author" rel="author" href="/">
                                             pizssn
                                         </a>
-                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2019-11-25</a></span>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-04-28</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">4.4
+                                    href="#">9.3
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">990</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">2702</a></span>
                                         
                                             <span class="post-category">&#x5206;&#x7C7B;:
                                 
-                                <a href="https://pizssn.github.io/tag/TNLvjhjjo/">线程</a>
+                                <a href="https://pizssn.github.io/tag/CmLWmWJH4/">java虚拟机</a>
                                 
                             </span>
                                             
@@ -188,171 +188,83 @@
                         </header>
                         
                         <div class="post-content">
-                            <p>  列举了几个线程常用方法。</p>
-<h2 id="线程停止">线程停止</h2>
+                            <h2 id="什么是jvm">什么是JVM？</h2>
+<blockquote>
+<p>  JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。<br>
+  引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。Java语言使用Java虚拟机屏蔽了与具体平台相关的信息，使得Java语言编译程序只需生成在Java虚拟机上运行的目标代码（字节码），就可以在多种平台上不加修改地运行。</p>
+</blockquote>
+<p><strong>JVM的体系结构：</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200609160011336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></figure>
+<hr>
+<h2 id="类加载器classloader">类加载器（ClassLoader）</h2>
+<p>java提供有3种类加载器<br>
+<strong>引导（Bootstrap）类加载器、扩展（Extension）类加载器、系统（System）类加载器</strong></p>
+<h4 id="类加载器">类加载器</h4>
+<p>  它用来加载 Java 的核心类，是用原生代码来实现的，负责<strong>加载系统类</strong>。$JAVA_HOME中jre/lib/rt.jar里所有的class，由C++实现，不是ClassLoader子类。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以<strong>不允许直接通过引用进行操作</strong>。</p>
+<h4 id="extension类加载器">Extension类加载器</h4>
+<p>Extension类加载器是由ExtClassLoader实现的，负责<strong>加载JRE的扩展目录</strong>，lib/ext或者由java.ext.dirs系统属性指定的目录中的JAR包的类，由Java语言实现。</p>
+<h4 id="system类加载器">System类加载器</h4>
+<p>系统类加载器是由 Sun 的 AppClassLoader实现的，AppClassLoader负责加载应用类的。它负责在JVM启动时加载来自Java命令的-classpath选项、java.class.path系统属性，或者CLASSPATH换将变量所指定的JAR包和类路径。程序可以通过ClassLoader的静态方法getSystemClassLoader()来获取系统类加载器。如果没有特别指定，则用户自定义的类加载器都以此类加载器作为父加载器。由Java语言实现，父类加载器为ExtClassLoader。</p>
+<h4 id="类加载过程">类加载过程</h4>
 <ol>
-<li>建议线程正常停止，利用次数，不建议死循环</li>
-<li>建议使用标志位，设置一个标志位</li>
-<li>不要使用stop或者destroy等过时或JDK不建议使用的法</li>
+<li><strong>加载</strong>：将class文件字节码内容加载到内存中，并将这些静态数据转换成方法区的运行时数据结构，会产生一个类对应Class对象</li>
+<li><strong>链接</strong>：将java类的二进制代码合并到JVM的运行状态之中的过程
+<ul>
+<li>验证：确保加载的类信息符合JVM的规范，无安全问题</li>
+<li>准备：正式为类变量（static）分配内存并 设置类变量默认初始值 的阶段，这些内存都将在方法区中进行分配。</li>
+<li>解析：虚拟机常量池内的符号引用（常量名）替换为直接引用（地址）的过程</li>
+</ul>
+</li>
+<li><strong>初始化</strong>：
+<ul>
+<li>执行类构造器<clinit>()方法的过程。类构造器是由编译期自动收集类中的 所有类变量 的赋值动作和静态代码块中的语句合并产生的</li>
+<li>当初始化一个类的时候，如果法相其父类还没有进行初始化，则需要先触发其父类的初始化</li>
+<li>虚拟机会保证一个类的<clinit>()方法在对线程环境中被正确加锁和同步</li>
+</ul>
+</li>
 </ol>
-<pre><code class="language-java">public class Demo1 implements Runnable {
-    //设置一个标识位
-    private boolean flag = true;
-
-    @Override
-    public void run() {
-        int i = 0;
-        while (flag) {
-            System.out.println(&quot;run...Thread&quot; + i++);
-        }
-    }
-
-    //设置一个公开的方法停止线程，转换标志位
-    public void stop() {
-        this.flag = false;
-    }
-
-    public static void main(String[] args) {
-        Demo1 d = new Demo1();
-        new Thread(d).start();
-        for (int i = 0; i &lt; 10000; i++) {
-            System.out.println(&quot;main&quot; + i);
-            if (i == 9000) {
-                //调用stop方法切换标志位，让线程停止
-                d.stop();
-                System.out.println(&quot;该线程停止&quot;);
-            }
-        }
-    }
-}
-</code></pre>
-<h2 id="线程休眠">线程休眠</h2>
-<p>  sleep() 的作用是让当前线程休眠，即当前线程会从“运行状态”进入到“休眠(阻塞)状态”。sleep()会指定休眠时间，线程休眠的时间会大于/等于该休眠时间；在线程重新被唤醒时，它会由“阻塞状态”变成“就绪状态”，从而等待cpu的调度执行。<br>
-  <strong>注意：</strong><code>sleep()</code>和<code>wait()</code>是有区别的。wait()的作用是让当前线程由“运行状态”进入“等待(阻塞)状态”的同时，也会释放同步锁。而sleep()的作用是也是让当前线程由“运行状态”进入到“休眠(阻塞)状态”。但是，<mark>wait()会释放对象的同步锁，而sleep()则不会释放锁。</mark></p>
-<pre><code class="language-java">import java.text.SimpleDateFormat;
-import java.util.Date;
-
-//sleep的功能
-public class Demo2 {
-
-    public static void main(String[] args) throws InterruptedException {
-        //打印当前系统时间
-        Date currentTime = new Date();//获取系统当前时间
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                System.out.println(new SimpleDateFormat(&quot;HH:mm:ss&quot;).format(currentTime));
-                currentTime = new Date();//刷新系统当前时间
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-    public static void TimeDown(int num) throws InterruptedException {
-        //模拟倒计时的功能
-        while (true) {
-            Thread.sleep(1000);
-            System.out.println(num--);
-            if (num &lt; 0)
-                break;
-        }
-    }
-}
-</code></pre>
-<h2 id="线程礼让">线程礼让</h2>
-<p>  只是让原来已经执行的线程先退出来重新竞争资源，还是得看CPU分配。</p>
-<pre><code class="language-java">public class Demo3 {
-    public static void main(String[] args) {
-        MyYield m = new MyYield();
-        new Thread(m, &quot;a&quot;).start();
-        new Thread(m, &quot;b&quot;).start();
-        new Thread(m, &quot;c&quot;).start();
-    }
-}
-
-class MyYield implements Runnable {
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + &quot;线程开始执行&quot;);
-        Thread.yield();//线程礼让
-        System.out.println(Thread.currentThread().getName() + &quot;线程停止执行&quot;);
-    }
-}
-</code></pre>
-<h2 id="线程插队">线程插队</h2>
-<p>  使用join()方法，可实现&quot;插队&quot;效果。当插队的线程运行结束后，其他线程将继续执行。</p>
-<pre><code class="language-java">public class Demo4 implements Runnable {
-    @Override
-    public void run() {
-        for (int i = 0; i &lt; 100; i++) {
-            System.out.println(&quot;线程VIP来了！&quot; + i);
-        }
-    }
-    
-    public static void main(String[] args) throws InterruptedException {
-        //启动我们的线程
-        Demo4 j = new Demo4();
-        Thread thread = new Thread(j);
-        thread.start();
-        //主线程
-        for (int i = 0; i &lt; 500; i++) {
-            if (i == 200) {
-                thread.join();//插队
-            }
-            System.out.println(&quot;main&quot; + i);
-        }
-    }
-}
-</code></pre>
-<h2 id="线程优先级">线程优先级</h2>
-<p>  可以通过<code>setPriority(优先级)</code>方法设置线程的优先级，优先级从1~10。<br>
-  <mark>注意：优先级高的不一定先行执行；</mark></p>
-<pre><code class="language-java">//测试线程的优先级
-public class Demo5 {
-    public static void main(String[] args) {
-        System.out.println(Thread.currentThread().getName() + &quot;----&quot; + Thread.currentThread().getPriority());
-        Mypriority mypriority = new Mypriority();
-        Thread t1 = new Thread(mypriority);
-        Thread t2 = new Thread(mypriority);
-        Thread t3 = new Thread(mypriority);
-        Thread t4 = new Thread(mypriority);
-        Thread t5 = new Thread(mypriority);
-        Thread t6 = new Thread(mypriority);
-
-        //先设置优先级，再启动
-        t1.start();
-
-        t2.setPriority(1);
-        t2.start();
-
-        t3.setPriority(4);
-        t3.start();
-
-        t4.setPriority(Thread.MAX_PRIORITY);
-        t4.start();
-
-        t5.setPriority(3);
-        t5.start();
-
-        t6.setPriority(10);
-        t6.start();
-
-    }
-}
-
-class Mypriority implements Runnable {
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + &quot;----&quot; + Thread.currentThread().getPriority());
-    }
-}
-</code></pre>
-<h2 id="守护线程">守护线程</h2>
-<p>  守护线程，在没有用户线程可服务时会自动离开。优先级：守护线程的优先级比较低，用于为系统中的其它对象和线程提供服务。<br>
-  设置：通过setDaemon(true)来设置线程为“守护线程”；将一个用户线程设置为守护线程的方式是在<mark>线程对象创建</mark>之前，用线程对象的setDaemon方法。</p>
-<pre><code class="language-java">thread.setDaemon(true);//默认是false，表示保护线程。正常的线程都是用户线程。
-</code></pre>
+<hr>
+<h2 id="双亲委派机制确保类的安全性">双亲委派机制（确保类的安全性）</h2>
+<p>  某个特定的类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，依次递归，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器<strong>无法完成</strong>此加载任务时，才自己去加载。这就是加载器的<strong>双亲委派机制</strong>。<br>
+  对于<strong>任意</strong>一个类，都需要由<strong>加载它的类加载器</strong>和这个<strong>类本身</strong>来一同确立其在Java虚拟机中的<strong>唯一性</strong><br>
+  为了系统类的安全，类似“ java.lang.Object”这种核心类，jvm需要保证他们生成的对象都会被认定为同一种类型。即通过<strong>代理模式</strong>，对于 Java 核心库的类的加载工作由引导类加载器来统一完成，保证了 Java 应用所使用的都是<strong>同一个版本的 Java 核心库的类</strong>，是互相兼容的。为了避免用户自己创建java.lang.Object等系统类，类加载采用委托机制，这样可以保证父类加载器优先，父类加载器能找到的类，子加载器就没有机会加载。例如我们自己写一个System类，会发现根本没有机会得到加载。就是因为System类是Bootstrap加载器加载的，就算自己重写，也总是使用Java系统提供的System。</p>
+<h4 id="类加载器间的联系">类加载器间的联系</h4>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/20200609141015161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BpenNzbg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></figure>
+<h4 id="注意">注意：</h4>
+<p>  虽然上面一直说的是父类加载器，子类加载器，但其实这只是说明一下加载器之间上下层级的关系，而他们本身并不是继承关系，而是<strong>组合关系</strong>。</p>
+<blockquote>
+<p>组合也是实现类的复用的一种方式。组合是把旧类对象作为新类的成员变量组合起来，用以实现新类的功能，用户看到的是新类的方法，而不能看到被组合对象的方法。因此，通常要在新类里使用private修饰被组合的旧类对象。</p>
+</blockquote>
+<p>那为什么类加载器用的是组合关系而不是继承关系呢？<br>
+  因为首先继承在<strong>编译时刻</strong>就已经定义了，因此无法在运行时刻改变从父类继承的实现。父类通常至少定义了部分子类的具体表示。因为继承对子类揭示了其父类的实现细节，所以继承常被认为“<strong>破坏了封装性</strong>” 。子类中的实现与它的父类有紧密的依赖关系，以至于父类实现中的任何变化必然会导致子类发生变化。当你需要复用子类时，实现上的<strong>依赖性</strong>就会产生一些问题<br>
+  而对象组合是通过获得对其他对象的引用而在<strong>运行时刻</strong>动态定义的。组合要求对象遵守彼此的接口约定，进而要求更仔细地定义接口，而这些接口并不妨碍你将一个对象和其他对象一起使用。因为对象只能通过接口访问，所以我们<strong>并不破坏封装性</strong>；只要类型一致，运行时刻还可以用一个对象来替代另一个对象；更进一步，因为对象的实现是基于接口写的，所以实现上存在<strong>较少的依赖关系</strong>。<br>
+　　对象组合对系统设计还有另一个作用，即<strong>优先使用对象组合有助于你保持每个类被封装</strong>，并被集中在单个任务上。</p>
+<hr>
+<h2 id="本地方法栈">本地方法栈</h2>
+<p>  在java程序中，凡是带了native关键字的，说明java的作用范围达不到了，回去调用底层c语言的库，会进入本地方法栈，调用本地方法接口（JNI）。于是本地方法栈将登记native方法，在最终执行的时候，通过JNI加载本地方法库中的方法。</p>
+<h2 id="pc寄存器">PC寄存器</h2>
+<p>  每个线程都有一个程序计数器(PC寄存器)，是线程私有的，就是一个指针, 指向方法区中的方法字节码(用来存储指向像一条指令的地址， 也即将要执行的指令代码)，在执行引擎读取下一条指令,是一个非常小的内存空间，几乎可以忽略不计。</p>
+<h2 id="方法区">方法区</h2>
+<p>  方法区是被所有线程共享，所有字段和方法字节码，以及一些特殊方法，如构造函数，接口代码也在此定义。简单说，所有定义的方法的信息都保存在该区域，此区域属于<strong>共享区间</strong>。<br>
+  <mark>静态变量、常量、类信息(构造方法、接口定义)、运行时的常量池存在方法区中，但是实例变量存在堆内存中，和方法区无关</mark></p>
+<h2 id="java栈">java栈</h2>
+<p>  java栈主管程序的运行，它耳钉生命周期和线程同步；主线程结束，栈内存就释放。java栈的内部保存一个个的栈帧(Stack Frame)，对应着一次次的java方法调用。<br>
+每个栈帧存储着：<br>
+  局部变量表（Local Variables）<br>
+  操作数栈（Operand Stack）（或表达式栈）<br>
+  动态链接（Dynamic Linking）（或指向运行时常量池的方法引用）<br>
+  方法返回地址（return Address）（或方法正常退出或者异常退出的定义）<br>
+后三者也被称为<strong>帧数据区</strong><br>
+注意：对于栈来说，不存在<strong>垃圾回收问题</strong>，一旦线程结束，栈就被回收。</p>
+<h2 id="堆">堆</h2>
+<p>  堆是java虚拟机所管理的内存中最大的一块。java堆是被所有<strong>线程共享</strong>的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是<strong>存放对象实例</strong>，几乎所有的对象实例都在这里分配内存。所有的对象实例和数组都要在堆上分配。java堆是垃圾收集器管理的主要区域，因此很多时候也被称作<strong>GC堆</strong>。</p>
+<p>到这里，我们的JVM内部结构就介绍完了，那么一个完整的jvm运行过程是怎样的呢？</p>
+<hr>
+<h2 id="java虚拟机运行过程">Java虚拟机运行过程</h2>
+<p>  一个类文件首先<strong>加载到方法区</strong>，一些符号引用被<strong>解析</strong>（静态解析）为直接引用或者等到运行时<strong>分派</strong>（动态绑定），经过一系列的<strong>加载</strong>过程（class文件的常量池被加载到方法区的运行时常量池，各种其它的静态存储结构被加载为方法区运行时数据解构等等）<br>
+  然后程序通过Class对象来访问方法区里的各种类型数据，当加载完之后，程序发现了<strong>main方法</strong>，也就是程序入口，那么程序就在<strong>栈</strong>里创建了一个栈帧，逐行读取方法里的代码所转换为的指令，而这些指令大多已经被解析为直接引用了，那么程序通过持有这些直接引用使用指令去方法区中寻找变量对应的字面量来进行方法操作。<br>
+  操作完成后方法返回给调用方，该栈帧出栈。内存空间被<strong>GC回收</strong>，堆里被new的那些也就被垃圾回收机制GC了。<br>
+  全流程包括以下几步：源码编写→编译（javac编译）→类文件被加载到虚拟机（类Class文件结构，虚拟机运行时内存分析，类加载机制）→虚拟机执行二进制字节码（虚拟机字节码执行系统）→垃圾回收（JVM垃圾回收机制）</p>
 
                         </div>
                         
@@ -362,9 +274,9 @@ class Mypriority implements Runnable {
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/&sharesource=qzone&title=线程方法学习&pics=https://pizssn.github.io/images/avatar.png?v=1591706339416&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/xian-cheng-fang-fa-xue-xi/&sharesource=weibo&title=线程方法学习 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591706339416 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/&sharesource=qzone&title=JVM个人小结&pics=https://pizssn.github.io/images/avatar.png?v=1591706339416&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/&sharesource=weibo&title=JVM个人小结 + " - " + &pic="https://pizssn.github.io/images/avatar.png?v=1591706339416 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -375,8 +287,8 @@ class Mypriority implements Runnable {
                                                                                     <span class="tag ">
                         
                         
-                        <a href="https://pizssn.github.io/tag/TNLvjhjjo/">#
-                    线程
+                        <a href="https://pizssn.github.io/tag/CmLWmWJH4/">#
+                    java虚拟机
                         </a>
                         
                             
@@ -394,13 +306,9 @@ class Mypriority implements Runnable {
                                                                                 <!---->
                                                                                 <section class="post-nav">
                                                                                     
-                                                                                        <a class="prev" rel="prev" href="https://pizssn.github.io/post/xian-cheng-an-quan-ji-an-li/">
-                                                                                            线程安全及案例
-                                                                                        </a>
-                                                                                        
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/ru-he-li-jie-lambda-biao-da-shi/">
-                                                                                                    如何理解Lambda表达式
+                                                                                                <a class="next" rel="next" href="https://pizssn.github.io/post/zhu-jie-yu-fan-she-xiao-jie/">
+                                                                                                    注解与反射小结
                                                                                                 </a>
                                                                                                 
                                                                                 </section>
