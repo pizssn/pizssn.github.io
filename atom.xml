@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://pizssn.github.io</id>
     <title>pizssn</title>
-    <updated>2020-06-09T12:39:03.410Z</updated>
+    <updated>2020-07-03T15:44:01.136Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://pizssn.github.io"/>
     <link rel="self" href="https://pizssn.github.io/atom.xml"/>
@@ -10,6 +10,39 @@
     <logo>https://pizssn.github.io/images/avatar.png</logo>
     <icon>https://pizssn.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, pizssn</rights>
+    <entry>
+        <title type="html"><![CDATA[远程连接虚拟机数据库出现：“ERROR 2003: “Can‘t connect to MySQL server on ‘localhost‘(10060)“]]></title>
+        <id>https://pizssn.github.io/post/yuan-cheng-lian-jie-xu-ni-ji-shu-ju-ku-chu-xian-error-2003-cant-connect-to-mysql-server-on-localhost10060/</id>
+        <link href="https://pizssn.github.io/post/yuan-cheng-lian-jie-xu-ni-ji-shu-ju-ku-chu-xian-error-2003-cant-connect-to-mysql-server-on-localhost10060/">
+        </link>
+        <updated>2020-06-30T15:41:15.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="首先测试本机和虚拟机能否ping通">首先测试本机和虚拟机能否ping通</h2>
+<ol>
+<li>ping的通，下一步</li>
+<li>ping不通，查看虚拟机的ipv4地址是否和本机的在同一网段，修改虚拟机的ipv4地址，使其和本机的在同一网段，即可ping通</li>
+</ol>
+<h2 id="测试能否成功连接">测试能否成功连接</h2>
+<p>  不能，则修改数据库连接权限</p>
+<pre><code class="language-sql">// %:表示从任何主机连接到mysql服务器
+mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION; 
+//刷新权限
+mysql&gt; FLUSH PRIVILEGES;
+</code></pre>
+<p>  或者 可能你的帐号不允许从远程登陆，只能在localhost。这个时候只要在localhost的那台电脑，登入MySQL后，更改 “mysql” 数据库里的 “user” 表里的 “host” 项，从”localhost“改称”%”</p>
+<pre><code class="language-sql">mysql -u root -p
+mysql&gt;use mysql;
+mysql&gt;update user set host = '%' where user = 'root'  and host='localhost';
+mysql&gt;select host, user from user;
+mysql&gt;FLUSH RIVILEGES;
+</code></pre>
+<h2 id="再次测试能否成功连接">再次测试能否成功连接</h2>
+<p>  不能，查看是否为虚拟机和本机的防火墙所阻隔。<br>
+关闭本机防护墙，开启<code>虚拟机的3306端口</code></p>
+<pre><code class="language-shell">firewall-cmd --zone=public --add-port=3306/tcp --permanent
+</code></pre>
+<h2 id="再次测试连接连接成功">再次测试连接，连接成功！</h2>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JVM个人小结]]></title>
         <id>https://pizssn.github.io/post/jvm-ge-ren-xiao-jie/</id>
@@ -866,70 +899,6 @@ class Mypriority implements Runnable {
 <p>  守护线程，在没有用户线程可服务时会自动离开。优先级：守护线程的优先级比较低，用于为系统中的其它对象和线程提供服务。<br>
   设置：通过setDaemon(true)来设置线程为“守护线程”；将一个用户线程设置为守护线程的方式是在<mark>线程对象创建</mark>之前，用线程对象的setDaemon方法。</p>
 <pre><code class="language-java">thread.setDaemon(true);//默认是false，表示保护线程。正常的线程都是用户线程。
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[如何理解Lambda表达式]]></title>
-        <id>https://pizssn.github.io/post/ru-he-li-jie-lambda-biao-da-shi/</id>
-        <link href="https://pizssn.github.io/post/ru-he-li-jie-lambda-biao-da-shi/">
-        </link>
-        <updated>2019-11-18T10:05:58.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>Lambda 表达式（lambda expression）是一个匿名函数，Lambda表达式基于数学中的λ演算得名，直接对应于其中的lambda抽象（lambda abstraction），是一个匿名函数，即没有函数名的函数。Lambda表达式可以表示闭包。</p>
-</blockquote>
-<p>  这里就展示了Lambda是如何从其他表现形式一步步简化成为lambda表达式的，有助于对lambda表达式的理解与使用。</p>
-<pre><code class="language-java">//1、先定义一个函数式借接口（就是只有一个抽象类方法）
-interface ILike {
-    void Lombda();
-}
-
-//2、实现类
-class Like implements ILike {
-    @Override
-    public void Lombda() {
-        System.out.println(&quot;i like lombda1!&quot;);
-    }
-}
-
-public class Demo1 {
-    //3、静态内部类
-    static class Like1 implements ILike {
-        @Override
-        public void Lombda() {
-            System.out.println(&quot;i like lambda2!&quot;);
-        }
-    }
-
-    public static void main(String[] args) {
-        new Like().Lombda();
-        new Like1().Lombda();
-
-        //4、局部内部类
-        class Like2 implements ILike {
-            @Override
-            public void Lombda() {
-                System.out.println(&quot;i like lambda3!&quot;);
-            }
-        }
-        new Like2().Lombda();
-
-        //5、匿名内部类,没有类的名称，只能靠接口或者父类实现
-        ILike i = new ILike() {
-            @Override
-            public void Lombda() {
-                System.out.println(&quot;i liek lambda4!&quot;);
-            }
-        };
-        i.Lombda();
-
-        //6、Lambda
-        i = () -&gt; {
-            System.out.println(&quot;i like lambda5!&quot;);
-        };
-        i.Lombda();
-    }
-}
 </code></pre>
 ]]></content>
     </entry>
